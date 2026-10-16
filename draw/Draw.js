@@ -100,6 +100,16 @@ class Draw {
             this._customPSwitch.src =
                 `./layout/draw/custom/${pSwitchFolders[this._gameMode]}/p-switch.png`;
         }
+        const angryWigglerFilenames = {
+            M1: "angry-wiggler-body-smb1.png",
+            M3: "angry-wiggler-body-smb3.png",
+            MW: "angry-wiggler-body-smw.png",
+            WU: "angry-wiggler-body-nsmb.png"
+        };
+
+        this._angryWigglerBody = new Image();
+        this._angryWigglerBody.src =
+            `./layout/draw/custom/${shelmetFolders[this._gameMode]}/${angryWigglerFilenames[this._gameMode]}`;
 
         this._images = [
             this._blocks.getTheme(),
@@ -135,6 +145,8 @@ class Draw {
                 this._shoeSprites.stiletto
             );
         }
+
+        this._images.push(this._angryWigglerBody);
         /* draw configurations */
         let compare = function(a,b) {
             if (a.z < b.z) { return -1; }
@@ -762,6 +774,7 @@ class Draw {
         onload = function() {
             loadedCount++; allloaded();
         };
+
         /* loading all images */
         $this._images.forEach(function (img) {
             let handled = false;
@@ -2081,7 +2094,14 @@ class Draw {
                         : null;
 
                 // Preserve both custom sprite enhancements.
-                const selectedSprite = customShoe ||
+                const customWiggler =
+                    drawExt.customAngryBody &&
+                    $this._angryWigglerBody.complete &&
+                    $this._angryWigglerBody.naturalWidth > 0
+                        ? $this._angryWigglerBody
+                        : null;
+
+                const selectedSprite = customWiggler || customShoe ||
                     (useCustomPSwitch ? $this._customPSwitch : null);
 
                 const sprite = selectedSprite || _titleset;
