@@ -114,6 +114,27 @@ class Draw {
         if (this._customPSwitch) {
             this._images.push(this._customPSwitch);
         }
+
+        // Custom Shoe Goomba and Stiletto artwork for SMB1 and SMB3.
+        this._shoeSprites = null;
+
+        if (this._gameMode === "M1" || this._gameMode === "M3") {
+            const style = this._gameMode === "M1" ? "smb1" : "smb3";
+            const spritePath = "./layout/draw/custom/" + style + "/";
+
+            this._shoeSprites = {
+                shoe: new Image(),
+                stiletto: new Image()
+            };
+
+            this._shoeSprites.shoe.src = spritePath + "shoe-goomba.png";
+            this._shoeSprites.stiletto.src = spritePath + "stiletto-goomba.png";
+
+            this._images.push(
+                this._shoeSprites.shoe,
+                this._shoeSprites.stiletto
+            );
+        }
         /* draw configurations */
         let compare = function(a,b) {
             if (a.z < b.z) { return -1; }
@@ -743,11 +764,30 @@ class Draw {
         };
         /* loading all images */
         $this._images.forEach(function (img) {
-            if (img.complete && img.naturalWidth > 0) {
+            let handled = false;
+
+            function finish(success, err) {
+                if (handled) return;
+                handled = true;
+
+                if (!success) {
+                    onerror(err || { target: img });
+                }
+
                 onload();
-            } else {
-                img.onload = onload;
-                img.onerror = onerror;
+            }
+
+            img.onload = function () {
+                finish(true);
+            };
+
+            img.onerror = function (err) {
+                finish(false, err);
+            };
+
+            // Handle images that finished before handlers were attached.
+            if (img.complete) {
+                finish(img.naturalWidth > 0, { target: img });
             }
         });
     }
@@ -2032,25 +2072,35 @@ class Draw {
                     !courseObject.subType &&
                     $this._customPSwitch !== null;
 
-                const sprite = useCustomPSwitch
-                    ? $this._customPSwitch
-                    : _titleset;
+
+                const customShoe =
+                    courseObject.type === 45 && $this._shoeSprites
+                        ? ((courseObject.flags & 0x04)
+                            ? $this._shoeSprites.stiletto
+                            : $this._shoeSprites.shoe)
+                        : null;
+
+                // Preserve both custom sprite enhancements.
+                const selectedSprite = customShoe ||
+                    (useCustomPSwitch ? $this._customPSwitch : null);
+
+                const sprite = selectedSprite || _titleset;
 
                 var objectPaint = {
                     "titleset": sprite,
-                    "xT": useCustomPSwitch ? 0 : drawExt.xT,
-                    "yT": useCustomPSwitch ? 0 : drawExt.yT,
-                    "xTs": useCustomPSwitch ? sprite.naturalWidth : _ts,
-                    "yTs": useCustomPSwitch ? sprite.naturalHeight : _ts,
+                    "xT": selectedSprite ? 0 : drawExt.xT,
+                    "yT": selectedSprite ? 0 : drawExt.yT,
+                    "xTs": selectedSprite ? sprite.naturalWidth : _ts,
+                    "yTs": selectedSprite ? sprite.naturalHeight : _ts,
                     "x": x, "y": y,
                     "xExt": drawExt.x, "yExt": drawExt.y,
                     "xBase": _base, "yBase": _base,
+                    "customShoe": Boolean(customShoe),
                     "size": courseObject.size,
                     "width": courseObject.width,
                     "opacity": opacity,
                     "rotation": rotation
                 };
-
                 $this._paintObject(objectPaint);
             });
 
@@ -2139,6 +2189,14 @@ class Draw {
                 (this._yFix - (_y + (_yExt * _size) + 1) * this._base) - this._base;
         let xBase = _xBase * _size,
             yBase = _yBase * _size;
+
+        // Preserve the custom shoe sprite's aspect ratio.
+        if (_objectPaint.customShoe) {
+            const aspectRatio = yTs / xTs;
+            const originalHeight = yBase;
+            yBase = xBase * aspectRatio;
+            y -= yBase - originalHeight;
+        }
         /* process opacity */
         if(_opacity) {
             this._context.save();
