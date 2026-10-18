@@ -1131,8 +1131,9 @@ class Draw {
             _base = $this._base;
         let x = courseObject.x, y = courseObject.y;
 
-        // Determine rotation for objects attached to pipes.
+        // Detect objects attached to pipes.
         let pipeRotation = 0;
+        let pipeDirection = null;
 
         if (courseObject.type !== 9 && courseObject.linkId !== -1) {
             const pipe = this._objects.find(obj =>
@@ -1141,6 +1142,7 @@ class Draw {
 
             if (pipe) {
                 const direction = (pipe.flags & 0x60) / 0x20;
+                pipeDirection = direction;
 
                 const rotations = {
                     0: 90,   // Right
@@ -1230,41 +1232,45 @@ class Draw {
                 ) {
 
                     // Shared enlarged-enemy offsets.
+                    // Big Koopa Troopa, Piranha Plant, Dry Bones, and Rocky Wrench.
                     const tallEnemyOffsets = {
-                        0: { x: 0.5, y: -1.5 },  // Right
-                        1: { x: -0.5, y: -0.5 }, // Left
-                        2: { x: 0.5, y: -0.5 },  // Up
-                        3: { x: -0.5, y: -1.5 }  // Down
+                        0: { x: -0.5, y: -2 },  // Right
+                        1: { x: -0.5, y: -1 }, // Left
+                        2: { x: 0, y: -1.5 },  // Up
+                        3: { x: -1, y: -1.5 }  // Down
                     };
 
+                    // Shared offsets: Boo, Monty Mole, Podoboo (Lava Bubble).
                     const centeredEnemyOffsets = {
-                        0: { x: 0, y: -1 },       // Right
-                        1: { x: 0, y: 0 },        // Left
-                        2: { x: 0.5, y: -0.5 },   // Up
-                        3: { x: -0.5, y: -0.5 }   // Down
+                        0: { x: -0.5, y: -1.5 },  // Right
+                        1: { x: -0.5, y: -0.5 },   // Left
+                        2: { x: 0, y: -1 },  // Up
+                        3: { x: -1, y: -1 }  // Down
                     };
 
+                    // Shared offsets: Cheep Cheep, Muncher.
                     const compactEnemyOffsets = {
-                        0: { x: 0.5, y: -1 },   // Right
-                        1: { x: -0.5, y: 0 },  // Left
-                        2: { x: 0.5, y: 0 },   // Up
-                        3: { x: -0.5, y: -1 }  // Down
+                        0: { x: -0.5, y: -1.5 },   // Right
+                        1: { x: -0.5, y: -0.5 },  // Left
+                        2: { x: 0, y: -1 },   // Up
+                        3: { x: -1, y: -1 }  // Down
                     };
 
+                    // Shared offsets: Spiny, Buzzy Beetle, Spike Top.
                     const shellEnemyOffsets = {
-                        0: { x: 0.5, y: 0 },   // Right
-                        1: { x: -0.5, y: 0 },  // Left
-                        2: { x: 0, y: 0.5 },   // Up
-                        3: { x: 0, y: -0.5 }  // Down
+                        0: { x: -0.5, y: -0.5 },   // Right
+                        1: { x: -0.5, y: -0.5 },  // Left
+                        2: { x: -0.5, y: -0.5 },   // Up
+                        3: { x: -0.5, y: -0.5 }  // Down
                     };
 
                     // Enlarged pipe-enemy offsets by type and direction.
                     const enlargedEnemyOffsets = {
                         0: { // Goomba
-                            0: { x: 0.8, y: -1.5 },
-                            1: { x: -0.8, y: -0.5 },
-                            2: { x: 0.5, y: -0.2 },
-                            3: { x: -0.5, y: -1.8 }
+                            0: { x: 0, y: -2 },  // Right
+                            1: { x: -1, y: -1 },  // Left
+                            2: { x: 0, y: -1 },  // Up
+                            3: { x: -1, y: -2 } // Down
                         },
 
                         1: tallEnemyOffsets, // Big Koopa Troopa
@@ -1272,17 +1278,17 @@ class Draw {
                         2: tallEnemyOffsets, // Piranha Plant
 
                         3: { // Hammer Bro
-                            0: { x: 1, y: -1 },
-                            1: { x: 0, y: -1 },
-                            2: { x: 0.5, y: -0.5 },
-                            3: { x: 0.5, y: -1.5 }
+                            0: { x: 0.5, y: -1.5 },  // Right
+                            1: { x: -0.5, y: -1.5 },  // Left
+                            2: { x: 0, y: -1 },  // Up
+                            3: { x: 0, y: -2 } // Down
                         },
 
                         15: { // Bob-omb
-                            0: { x: 0.5, y: -1 },
-                            1: { x: -0.5, y: 0 },
-                            2: { x: 0.5, y: 0 },
-                            3: { x: -0.5, y: -1 }
+                            0: { x: -0.5, y: -1.5 },  // Right
+                            1: { x: -0.5, y: -0.5 },  // Left
+                            2: { x: 0, y: -1 },  // Up
+                            3: { x: -1, y: -1 } // Down
                         },
 
                         25: shellEnemyOffsets, // Spiny
@@ -1290,10 +1296,10 @@ class Draw {
                         28: shellEnemyOffsets, // Buzzy Beetle
 
                         39: { // Magikoopa
-                            0: { x: 0, y: -1.5 },
-                            1: { x: 0, y: -0.5 },
-                            2: { x: 0.5, y: -1 },
-                            3: { x: -0.5, y: -1 }
+                            0: { x: -0.5, y: -2 },  // Right
+                            1: { x: -0.5, y: -1 },  // Left
+                            2: { x: 0, y: -1.5 },  // Up
+                            3: { x: -1, y: -1.5 } // Down
                         },
 
                         40: shellEnemyOffsets, // Spike Top
@@ -1301,26 +1307,26 @@ class Draw {
                         41: centeredEnemyOffsets, // Boo
 
                         42: { // Koopa Clown Car
-                            0: { x: 1.2, y: -1 },
-                            1: { x: -0.2, y: -1 },
-                            2: { x: 0.5, y: -0.3 },
-                            3: { x: 0.5, y: -1.7 }
+                            0: { x: 1, y: -1.5 },  // Right
+                            1: { x: -1, y: -1.5 },  // Left
+                            2: { x: 0, y: -0.5 },  // Up
+                            3: { x: 0, y: -2.5 } // Down
                         },
 
                         46: tallEnemyOffsets, // Dry Bones
 
                         48: { // Blooper
-                            0: { x: -0.5, y: -1.5 },
-                            1: { x: 0.5, y: -0.5 },
-                            2: { x: 0.5, y: -1.5 },
-                            3: { x: -0.5, y: -0.5 }
+                            0: { x: -1, y: -2 },  // Right
+                            1: { x: 0, y: -1 },  // Left
+                            2: { x: 0, y: -2 },  // Up
+                            3: { x: -1, y: -1 } // Down
                         },
 
                         52: { // Wiggler / Angry Wiggler
-                            0: { x: 0.5, y: -0.6 },
-                            1: { x: -0.7, y: 0 },
-                            2: { x: 0.2, y: 0 },
-                            3: { x: -0.5, y: -1 }
+                            0: { x: 0, y: -2 },  // Right
+                            1: { x: -1, y: -1 },  // Left
+                            2: { x: 0, y: -1 },  // Up
+                            3: { x: -1, y: -2 } // Down
                         },
 
                         56: compactEnemyOffsets, // Cheep Cheep
@@ -1335,10 +1341,10 @@ class Draw {
                         60: centeredEnemyOffsets, // Podoboo
 
                         61: { // Chain Chomp
-                            0: { x: 0.5, y: -1.3 },
-                            1: { x: -0.7, y: 0 },
-                            2: { x: 0.5, y: 0 },
-                            3: { x: -0.7, y: -1.2 }
+                            0: { x: 0, y: -1.5 },  // Right
+                            1: { x: -1, y: -0.5 },  // Left
+                            2: { x: 0, y: -0.5 },  // Up
+                            3: { x: -1, y: -1.5 } // Down
                         }
                     };
 
@@ -1352,405 +1358,56 @@ class Draw {
                         x += enlargedOffset.x;
                         y += enlargedOffset.y;
                     }
+                    // NSMBU-specific adjustments for enlarged pipe-attached enemies.
+                    // Koopa Troopa, Piranha Plant, Bob-omb, Spiny, Buzzy Beetle,
+                    // Spike Top, Dry Bones, Cheep Cheep, Muncher, and Rocky Wrench.
+                    const nsmbOffsetEnemies = [
+                        1,  // Koopa Troopa
+                        2,  // Piranha Plant
+                        15, // Bob-omb
+                        25, // Spiny
+                        28, // Buzzy Beetle
+                        40, // Spike Top
+                        46, // Dry Bones
+                        56, // Cheep Cheep
+                        57  // Muncher
+                    ];
+
+                    const needsNSMBOffset =
+                        $this._gameMode === "WU" &&
+                        (
+                            nsmbOffsetEnemies.includes(courseObject.type) ||
+                            (courseObject.type === 58 && courseObject.subType === 0) // Rocky Wrench
+                        );
+
+                    if (needsNSMBOffset) {
+                        const nsmbDirectionOffsets = {
+                            0: { x: 0.5, y: 0 },    // Right
+                            1: { x: -0.5, y: 0 },   // Left
+                            2: { x: 0, y: 0.5 },    // Up
+                            3: { x: 0, y: -0.5 }   // Down
+                        };
+
+                        const offset = nsmbDirectionOffsets[direction];
+
+                        if (offset) {
+                            x += offset.x;
+                            y += offset.y;
+                        }
+                    }
+
+                    // NSMBU: Move enlarged Wiggler / Angry Wiggler up by 0.5 tiles
+                    // for all four pipe directions.
+                    if ($this._gameMode === "WU" && courseObject.type === 52) {
+                        y += 0.5;
+                    }
                 }
 
             } // End if (pipe)
         } // End pipe-attachment check
 
-        // Position skull coasters attached to curved tracks.
-
-        // Position skull coasters attached to curved tracks.
-        if (courseObject.type === 36 && courseObject.linkId !== -1) {
-
-            // Find the track associated with this skull coaster.
-            const track = this._objects.find(obj =>
-                obj.type === 59 && obj.linkId === courseObject.linkId
-            );
-
-            if (track) {
-                const railIndex = (track.flags >>> 22) & 7;
-
-                // Offsets based on curved-track orientation.
-                const offsets = {
-                    4: { x: -0.5, y: 2.5 }, // Upper-left
-                    5: { x: -0.5, y: -3.5 }, // Lower-right
-                    6: { x: -0.5, y: -3.5 }, // Lower-left
-                    7: { x: -0.5, y: 2.5 }  // Upper-right
-                };
-
-                const offset = offsets[railIndex];
-
-                if (offset) {
-                    x += offset.x;
-                    y += offset.y;
-                }
-            }
-        }
-
-        // Draw empty Buzzy and Spiny Shelmets using custom artwork.
-        if (
-            (courseObject.type === 25 || courseObject.type === 28) &&
-            (courseObject.flags & 0x4) !== 0
-        ) {
-            const shelmet = courseObject.type === 25
-                ? this._spinyShelmet
-                : this._buzzyShelmet;
-
-            if (shelmet && shelmet.complete && shelmet.naturalWidth > 0) {
-                this._context.drawImage(
-                    shelmet,
-                    0, 0,
-                    shelmet.naturalWidth, shelmet.naturalHeight,
-                    x * _base,
-                    this._yFix - (y + 1) * _base,
-                    _base, _base
-                );
-            }
-
-            return;
-        }
-
-        /* Castle bridges should only appear in Castle themes. */
-        if (courseObject.type === 49 && $this._gameTheme !== "castle") {
-            return;
-        }
-
-        /* Draw the Castle axe goal for all game styles. */
-        if (courseObject.type === 27 &&
-            $this._gameTheme === "castle") {
-
-            // The axe occupies columns 13-14 and rows 8-10.
-            const axeWidth = 2;
-            const axeHeight = 3;
-
-            // Align the axe with the left edge of the goal object.
-            const drawX = x * _base;
-
-            // Position the bottom of the axe at the goal object's base.
-            const bottomY = $this._yFix - (y + 1) * _base;
-            const drawY = bottomY - axeHeight * _base;
-
-            // Draw the 4x1 Castle goal base beneath the axe.
-            // The chain occupies the left 2 tiles; the base occupies the right 2.
-            // Position the base directly below the axe.
-            // Shift the chain and base two tiles left of the axe.
-            const baseX = drawX - 2 * _base;
-            const baseY = drawY + axeHeight * _base;
-
-            // Draw the chain (columns 1-2, row 14).
-            $this._context.drawImage(
-                _titleset,
-                1 * _ts, 14 * _ts,
-                2 * _ts, 1 * _ts,
-                baseX, baseY,
-                2 * _base, _base
-            );
-
-            // Draw the base (columns 1-2, row 15).
-            $this._context.drawImage(
-                _titleset,
-                1 * _ts, 15 * _ts,
-                2 * _ts, 1 * _ts,
-                baseX + 2 * _base, baseY,
-                2 * _base, _base
-            );
-
-            $this._context.drawImage(
-                _titleset,
-                13 * _ts,
-                8 * _ts,
-                axeWidth * _ts,
-                axeHeight * _ts,
-                drawX,
-                drawY,
-                axeWidth * _base,
-                axeHeight * _base
-            );
-
-            return;
-        }
-
-        /* Draw the Super Mario World goal structure. */
-        if (courseObject.type === 27 &&
-            $this._gameMode === "MW" &&
-            $this._gameTheme !== "castle") {
-
-            const goalHeight = courseObject.height - 2;
-
-            // The goal consists of two posts separated by one tile.
-            const leftX = x * _base;
-            const rightX = leftX + 2 * _base;
-            const rightOffsetY = 0;
-
-            // Position the bottom of the posts at the goal's base.
-            const bottomY = $this._yFix - (y + 1) * _base;
-
-            // Calculate the top position of the goal structure.
-            const topY = bottomY - (goalHeight - 1) * _base;
-
-            // Draw the repeating vertical post sections.
-            for (let row = 0; row < goalHeight - 1; row++) {
-                const drawY = bottomY - row * _base;
-
-                // Leave the uppermost left section open for the goal tape.
-                if (row !== goalHeight - 2) {
-                    $this._context.drawImage(
-                        _titleset,
-                        6 * _ts, 3 * _ts, _ts, _ts,
-                        leftX, drawY, _base, _base
-                    );
-                }
-
-                // Draw the right post normally.
-                $this._context.drawImage(
-                    _titleset,
-                    7 * _ts, 3 * _ts, _ts, _ts,
-                    rightX, drawY + rightOffsetY, _base, _base
-                );
-            }
-
-            // Draw only the bottom half of the extra straight section.
-            $this._context.drawImage(
-                _titleset,
-                7 * _ts, 3 * _ts + _ts / 2,
-                _ts, _ts / 2,
-                rightX, topY + _base / 2,
-                _base, _base / 2
-            );
-
-            // Draw the curved top at its corrected position.
-            $this._context.drawImage(
-                _titleset,
-                7 * _ts, 2 * _ts, _ts, _ts,
-                rightX, topY - _base / 2,
-                _base, _base
-            );
-
-            // Draw the complete 2x2 goal tape sprite.
-            // This includes the left curved top and horizontal tape.
-            if ($this._goalTape &&
-                $this._goalTape.complete &&
-                $this._goalTape.naturalWidth > 0) {
-
-                $this._context.drawImage(
-                    $this._goalTape,
-                    leftX,
-                    topY,
-                    2 * _base,
-                    2 * _base
-                );
-            }
-
-            return;
-        }
-
-        /* Draw the SMB1 and NSMBU flagpoles in all non-Castle themes. */
-        if (courseObject.type === 27 &&
-            ($this._gameMode === "M1" || $this._gameMode === "WU") &&
-            $this._gameTheme !== "castle") {
-
-            // Total height includes the top ball, shaft, and solid base.
-            const poleHeight = courseObject.height;
-
-            // Align the pole with the goal object's left edge.
-            const poleX = x * _base;
-
-            // Position the solid base above the ground.
-            const baseY = $this._yFix - (y + 1) * _base;
-
-            // Draw the solid base.
-            $this._context.drawImage(
-                _titleset,
-                6 * _ts, 3 * _ts,
-                _ts, _ts,
-                poleX, baseY,
-                _base, _base
-            );
-
-            // Draw the vertical shaft between the base and top ball.
-            for (let row = 1; row < poleHeight - 1; row++) {
-                const drawY = baseY - row * _base;
-
-                $this._context.drawImage(
-                    _titleset,
-                    7 * _ts, 2 * _ts,
-                    _ts, _ts,
-                    poleX, drawY,
-                    _base, _base
-                );
-            }
-
-            // Draw the green ball at the top.
-            const topY = baseY - (poleHeight - 1) * _base;
-
-            $this._context.drawImage(
-                _titleset,
-                6 * _ts, 2 * _ts,
-                _ts, _ts,
-                poleX, topY,
-                _base, _base
-            );
-
-            // Draw the flag one tile below the ball.
-            // Flip horizontally and shift left one additional tile.
-            $this._context.save();
-
-            $this._context.translate(
-                poleX + _base / 2,
-                topY + _base
-            );
-
-            $this._context.scale(-1, 1);
-
-            $this._context.drawImage(
-                _titleset,
-                7 * _ts, 3 * _ts,
-                _ts, _ts,
-                0, 0,
-                _base, _base
-            );
-
-            $this._context.restore();
-
-            return;
-        }
-
-        /* Draw the SMB3 goal in all non-Castle themes. */
-        if (courseObject.type === 27 &&
-            $this._gameMode === "M3" &&
-            $this._gameTheme !== "castle") {
-
-            // The SMB3 goal is a 2x2 tile square.
-            const goalWidth = 2 * _base;
-            const goalHeight = 2 * _base;
-
-            // Align the goal horizontally with the goal object.
-            const goalX = x * _base;
-
-            // Position the goal above the ground.
-            // The goal object is 11 tiles tall, but the SMB3
-            // goal graphic only occupies the upper 2 tiles.
-            const bottomY = $this._yFix - (y + 1) * _base;
-            const goalY = bottomY - 4.5 * _base;
-
-            // Draw the complete 2x2 goal frame.
-            $this._context.drawImage(
-                _titleset,
-                6 * _ts, 2 * _ts,
-                2 * _ts, 2 * _ts,
-                goalX, goalY,
-                goalWidth, goalHeight
-            );
-
-            // Draw the mushroom inside the goal frame.
-            // Position it in the center of the 2x2 square.
-            const mushroomX = goalX + _base / 2;
-            const mushroomY = goalY + _base / 2;
-
-            $this._context.drawImage(
-                _titleset,
-                15 * _ts, 6 * _ts,
-                _ts, _ts,
-                mushroomX, mushroomY,
-                _base, _base
-            );
-
-            return;
-        }
-
-        /* Draw skewers as one complete sprite so rotation works correctly. */
-        if (courseObject.type === 12 && courseObject.subType === 1) {
-            let spriteWidth = 4 * _base,
-                spriteHeight = 4 * _base,
-                xSprite = (x - 2) * _base,
-                ySprite = $this._yFix - (y + 4) * _base,
-                angle = (courseObject.direction + 2) * Math.PI / 2;
-
-            $this._context.save();
-            $this._context.translate(
-                xSprite + spriteWidth / 2,
-                ySprite + spriteHeight / 2
-            );
-            $this._context.rotate(angle);
-            $this._context.scale(1, -1);
-            $this._context.drawImage(
-                _titleset,
-                0, 16 * _ts, 4 * _ts, 4 * _ts,
-                -spriteWidth / 2, -spriteHeight / 2,
-                spriteWidth, spriteHeight
-            );
-            $this._context.restore();
-            return;
-        }
-
-
-        /* Draw fire bars with variable length and 64 rotation positions. */
-        if (courseObject.type === 24) {
-
-            // Eight possible lengths: 4, 6, 8, 10, 12, 14, 16, 18.
-            const lengthIndex = (courseObject.flags >>> 22) & 7;
-            const fireballCount = 4 + lengthIndex * 2;
-
-            // Decode rotation using the full 32-bit value.
-            // 0° points upward, increasing clockwise.
-            const rotationFraction = courseObject.extendedData / 4294967296;
-            const angle = ((90 - rotationFraction * 360 + 360) % 360)
-                * Math.PI / 180;
-
-            // Center of the stationary base tile.
-            const baseX = x * _base;
-            const baseY = $this._yFix - (y + 1) * _base;
-            const centerX = baseX + _base / 2;
-            const centerY = baseY + _base / 2;
-
-            const ctx = $this._context;
-
-            // Draw the stationary base from column 13, row 2.
-            ctx.drawImage(
-                _titleset,
-                13 * _ts, 2 * _ts,
-                _ts, _ts,
-                baseX, baseY,
-                _base, _base
-            );
-
-            // Fireball sprite: column 14, row 2.
-            // Full-tile sprite size with half-tile center spacing.
-            const fireballSize = _base;
-            const spacing = _base * 8 / 16;
-
-            // The first fireball is centered directly over the base.
-            // Subsequent fireballs extend outward along the angle.
-            for (let i = 0; i < fireballCount; i++) {
-
-                const distance = i * spacing;
-
-                const fireX = centerX + Math.sin(angle) * distance;
-                const fireY = centerY - Math.cos(angle) * distance;
-
-                // Rotate each fireball 90 degrees clockwise.
-                ctx.save();
-                ctx.translate(fireX, fireY);
-                ctx.rotate(angle);
-
-                ctx.drawImage(
-                    _titleset,
-                    14 * _ts, 2 * _ts,
-                    _ts, _ts,
-                    -fireballSize / 2,
-                    -fireballSize / 2,
-                    fireballSize,
-                    fireballSize
-                );
-
-                ctx.restore();
-            }
-
-            return;
-        }
-
-           /* Rotate Spinies, Buzzy Beetles, and Spike Tops
-           to match their attached surfaces. */
+        // Rotate Spinies, Buzzy Beetles, and Spike Tops
+        // to match their attached surfaces.
         if (
             courseObject.type === 25 ||
             courseObject.type === 28 ||
@@ -2058,8 +1715,16 @@ class Draw {
         if (def.extend) {
             let ext = def.extend(courseObject, this._gameMode, this._gameTheme);
 
+            // Pipe-attached Chain Chomps should not display their stake.
+            if (courseObject.type === 61 && pipeDirection !== null) {
+                ext = ext.filter(tile =>
+                    !(tile.xT === 12 && tile.yT === 6)
+                );
+            }
+
+
         // Rotate all sprite tiles together for pipe-attached objects.
-        if (pipeRotation && ext.length > 0) {
+        if (pipeDirection !== null && pipeRotation && ext.length > 0) {
             const minX = Math.min(...ext.map(tile => tile.x));
             const maxX = Math.max(...ext.map(tile => tile.x));
             const minY = Math.min(...ext.map(tile => tile.y));
@@ -2161,7 +1826,7 @@ class Draw {
             }
 
             // Restore the canvas after rotating the complete object.
-            if (pipeRotation && ext.length > 0) {
+            if (pipeDirection !== null && pipeRotation && ext.length > 0) {
                 this._context.restore();
             }
         }
