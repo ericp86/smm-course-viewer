@@ -2008,7 +2008,10 @@ class Draw {
             if (courseObject.type === 25) {
                 spriteX = 2; // Spiny
             } else if (courseObject.type === 28) {
-                spriteX = 4; // Buzzy Beetle
+                // Match the theme-specific Buzzy Beetle colors.
+                const useBlack = ["M1", "M3"].includes(this._gameMode) &&
+                    ["overworld", "water", "airship"].includes(this._gameTheme);
+                spriteX = useBlack ? 3 : 4;
             } else {
                 // Spike Top: red or blue.
                 spriteX = courseObject.subType ? 6 : 5;
