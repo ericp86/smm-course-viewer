@@ -2109,6 +2109,11 @@ class Draw {
             );
 
             $this._context.restore();
+
+            // Restore wings for surface-rotated enemies.
+            if ((courseObject.flags & 0x02) !== 0) {
+                $this._drawWings(courseObject, x, y);
+            }
             return;
 
         }
