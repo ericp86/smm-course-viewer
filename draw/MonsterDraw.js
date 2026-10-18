@@ -365,34 +365,39 @@ MonsterDraw._defitions = {
         return extend;
     }},
     52: {
-        "extend": function (courseObject, gameMode) {
+        "extend": function (courseObject, gameMode, isPipeAttached = false) {
             const extend = [];
             const isAngry = courseObject.subType !== 0;
 
-            // Shift NSMBU Wigglers slightly left.
-            const wigglerXOffset = gameMode === "WU" ? -0.25 : 0;
+            // Shift only free-standing NSMBU Wigglers slightly left.
+            const wigglerXOffset =
+                gameMode === "WU" && !isPipeAttached ? -0.25 : 0;
 
-            // Draw three overlapping body segments.
-            const bodyPositions = [
-                { x: 0.35, y: 0.20 }, // Rear segment
-                { x: 0.33, y: 0.10 }, // Middle segment
-                { x: 0.17, y: 0.05 }  // Front segment
-            ];
+            // Pipe-attached Wigglers display no body segments.
+            if (!isPipeAttached) {
+                const bodyPositions = [
+                    { x: 0.35, y: 0.20 }, // Rear segment
+                    { x: 0.33, y: 0.10 }, // Middle segment
+                    { x: 0.17, y: 0.05 }  // Front segment
+                ];
 
-            bodyPositions.forEach(position => {
-                extend.push({
-                    x: position.x + wigglerXOffset,
-                    y: position.y,
-                    xT: 9,
-                    yT: 4,
-                    customAngryBody: isAngry
+                bodyPositions.forEach(position => {
+                    extend.push({
+                        x: position.x + wigglerXOffset,
+                        y: position.y,
+                        xT: 9,
+                        yT: 4,
+                        customAngryBody: isAngry
+                    });
                 });
-            });
+            }
 
             // Draw the head after the body.
             extend.push({
                 x: wigglerXOffset,
-                y: 0.10 + (gameMode === "WU" ? 0.25 : 0),
+                y: isPipeAttached
+                    ? 0
+                    : 0.10 + (gameMode === "WU" ? 0.25 : 0),
                 xT: isAngry ? 9 : 8,
                 yT: 5
             });

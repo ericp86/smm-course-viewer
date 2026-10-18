@@ -2298,7 +2298,9 @@ class Draw {
 
         /* multiples cells */
         if (def.extend) {
-            let ext = def.extend(courseObject, this._gameMode, this._gameTheme);
+            let ext = courseObject.type === 52
+                ? def.extend(courseObject, this._gameMode, pipeDirection !== null)
+                : def.extend(courseObject, this._gameMode, this._gameTheme);
 
             // Pipe-attached Chain Chomps should not display their stake.
             if (courseObject.type === 61 && pipeDirection !== null) {
