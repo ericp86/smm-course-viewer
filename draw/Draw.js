@@ -1975,28 +1975,29 @@ class Draw {
         }
 
         /* multiples cells */
+        /* multiples cells */
         if (def.extend) {
-            let ext = def.extend(courseObject);
+            let ext = def.extend(courseObject, this._gameMode, this._gameTheme);
 
-            // Rotate all sprite tiles together for pipe-attached objects.
-            if (pipeRotation && ext.length > 0) {
-                const minX = Math.min(...ext.map(tile => tile.x));
-                const maxX = Math.max(...ext.map(tile => tile.x));
-                const minY = Math.min(...ext.map(tile => tile.y));
-                const maxY = Math.max(...ext.map(tile => tile.y));
+        // Rotate all sprite tiles together for pipe-attached objects.
+        if (pipeRotation && ext.length > 0) {
+            const minX = Math.min(...ext.map(tile => tile.x));
+            const maxX = Math.max(...ext.map(tile => tile.x));
+            const minY = Math.min(...ext.map(tile => tile.y));
+            const maxY = Math.max(...ext.map(tile => tile.y));
 
-                // Center of the complete assembled sprite in canvas coordinates.
-                const centerX = (x + (minX + maxX + 1) / 2) * _base;
-                const centerY = this._yFix -
-                    (y + (minY + maxY + 2) / 2) * _base;
+            // Center of the complete assembled sprite in canvas coordinates.
+            const centerX = (x + (minX + maxX + 1) / 2) * _base;
+            const centerY = this._yFix -
+                (y + (minY + maxY + 2) / 2) * _base;
 
-                this._context.save();
-                this._context.translate(centerX, centerY);
-                this._context.rotate(pipeRotation * Math.PI / 180);
-                this._context.translate(-centerX, -centerY);
-            }
+            this._context.save();
+            this._context.translate(centerX, centerY);
+            this._context.rotate(pipeRotation * Math.PI / 180);
+            this._context.translate(-centerX, -centerY);
+        }
 
-            ext.forEach(function (drawExt) {
+        ext.forEach(function (drawExt) {
                 let opacity = (drawExt.opacity) ? drawExt.opacity : null,
                     rotation = (drawExt.rotation) ? drawExt.rotation : null;
                 var objectPaint = {
