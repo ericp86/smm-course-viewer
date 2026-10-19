@@ -1179,6 +1179,12 @@ class Draw {
             _base = $this._base;
         let x = courseObject.x, y = courseObject.y;
 
+        // Skip pipes when their atlas artwork is unavailable.
+        if (courseObject.type === 9 &&
+            (!_titleset.complete || !_titleset.naturalWidth)) {
+            return;
+        }
+
         // Skip skull coasters when their tileset is unavailable.
         if (courseObject.type === 36 &&
             (!_titleset.complete || !_titleset.naturalWidth)) {
@@ -1569,7 +1575,12 @@ class Draw {
                         57: compactEnemyOffsets, // Muncher
 
                         58: { // Rocky Wrench / Monty Mole
-                            0: tallEnemyOffsets,     // Rocky Wrench
+                            0: { // Rocky Wrench: preserve calibrated base offsets.
+                                0: { x: -0.5, y: -2 },
+                                1: { x: -0.5, y: -1 },
+                                2: { x: 0, y: -1.5 },
+                                3: { x: -1, y: -1.5 }
+                            },
                             1: centeredEnemyOffsets  // Monty Mole
                         },
 
@@ -2442,6 +2453,11 @@ class Draw {
 
                 const sprite = selectedSprite || _titleset;
 
+                if (pipeDirection !== null &&
+                    (!sprite.complete || !sprite.naturalWidth)) {
+                    return;
+                }
+
                 var objectPaint = {
                     "titleset": sprite,
                     "xT": selectedSprite ? 0 : drawExt.xT,
@@ -2503,6 +2519,11 @@ class Draw {
         }
         /* only one cell */
         else {
+            if (pipeDirection !== null &&
+                (!_titleset.complete || !_titleset.naturalWidth)) {
+                return;
+            }
+
             let xT = def.xT, yT = def.yT;
             if(def.func) {
                 let nPos = def.func(courseObject);
