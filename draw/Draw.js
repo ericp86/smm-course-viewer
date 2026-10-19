@@ -895,6 +895,10 @@ class Draw {
         const ctx = this._context;
         const sprite = this._railSprite;
 
+        if (!sprite.complete || !sprite.naturalWidth) {
+            return;
+        }
+
         const scale = this._base / 16;
 
         // Original square endpoint artwork.
@@ -1011,12 +1015,21 @@ class Draw {
             this._drawRailSpriteSegment(x1, y1, x2, y2);
 
             // Draw upright endpoint caps for all straight tracks.
+            // Vertical tracks store their endpoint order in reverse.
+            const reverseEndpoints = index === 1;
+
             if (endpointAClosed) {
-                this._drawRailEndCap(x1, y1);
+                this._drawRailEndCap(
+                    reverseEndpoints ? x2 : x1,
+                    reverseEndpoints ? y2 : y1
+                );
             }
 
             if (endpointBClosed) {
-                this._drawRailEndCap(x2, y2);
+                this._drawRailEndCap(
+                    reverseEndpoints ? x1 : x2,
+                    reverseEndpoints ? y1 : y2
+                );
             }
         } else {
             // Curved tracks use the verified centers and radius.
