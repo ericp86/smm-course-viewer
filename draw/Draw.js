@@ -1152,6 +1152,12 @@ class Draw {
             _base = $this._base;
         let x = courseObject.x, y = courseObject.y;
 
+        // Skip skull coasters when their tileset is unavailable.
+        if (courseObject.type === 36 &&
+            (!_titleset.complete || !_titleset.naturalWidth)) {
+            return;
+        }
+
         // Directional offsets for normal-sized pipe-attached enemies.
         // Positive X moves right; positive Y moves up.
 
