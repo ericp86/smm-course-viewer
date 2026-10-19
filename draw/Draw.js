@@ -2410,12 +2410,15 @@ class Draw {
                     $this._customPSwitch !== null;
 
 
-                const customShoe =
+                const requestedShoe =
                     courseObject.type === 45 && $this._shoeSprites
                         ? ((courseObject.flags & 0x04)
                             ? $this._shoeSprites.stiletto
                             : $this._shoeSprites.shoe)
                         : null;
+
+                const customShoe = requestedShoe && requestedShoe.complete &&
+                    requestedShoe.naturalWidth > 0 ? requestedShoe : null;
 
                 // Preserve both custom sprite enhancements.
                 const customWiggler =
