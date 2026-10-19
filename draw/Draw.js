@@ -213,16 +213,35 @@ class Draw {
      */
     _drawBackground(_X, _Y) {
         const $this = this;
+        $this._backgroundReady = false;
         var bg = new Image($this._base, $this._base);
-        bg.onload = function() {
-            for(var y = _Y - 1; y >= 0; y--) {
-                for(var x = 0; x < _X; x++) {
-                    $this._context.drawImage(bg, x*$this._base, y*$this._base, $this._base, $this._base);
+        let handled = false;
+
+        function finish(success) {
+            if (handled) return;
+            handled = true;
+
+            if (success) {
+                for(var y = _Y - 1; y >= 0; y--) {
+                    for(var x = 0; x < _X; x++) {
+                        $this._context.drawImage(bg, x*$this._base, y*$this._base, $this._base, $this._base);
+                    }
                 }
+            } else {
+                console.error("Draw: Error: squares don\"t load.");
             }
+
+            $this._backgroundReady = true;
+            if ($this._onBackgroundReady) {
+                $this._onBackgroundReady();
+            }
+        }
+
+        bg.onload = function() {
+            finish(true);
         };
         bg.onerror = function() {
-            console.error("Draw: Error: squares don\"t load.");
+            finish(false);
         };
         bg.src = "./layout/draw/support/bg-square.png";
     }
@@ -236,6 +255,10 @@ class Draw {
         }
 
         const tileset = this._monsters.getTheme();
+        if (!tileset.complete || !tileset.naturalWidth) {
+            return;
+        }
+
         const tileSize = this._monsters.getThemeSize();
         const base = this._base;
 
@@ -676,14 +699,16 @@ class Draw {
     _drawObjects(_objects) {
         const $this = this;
         var imageCount = $this._images.length,
-            loadedCount = 0;
+            loadedCount = 0,
+            rendered = false;
         /* onerror event */
         var onerror = function(err) {
             let img = err.target;
             console.error("Draw: Error: theme don\"t exists.\n Path: "+img.src);
         },
         allloaded = function () {
-            if (loadedCount === imageCount) {
+            if (loadedCount === imageCount && $this._backgroundReady !== false && !rendered) {
+                rendered = true;
 
                 // Draw Castle lava after the tilesets have loaded,
                 // but before drawing the course objects.
@@ -782,6 +807,8 @@ class Draw {
         onload = function() {
             loadedCount++; allloaded();
         };
+
+        $this._onBackgroundReady = allloaded;
 
         /* loading all images */
         $this._images.forEach(function (img) {
