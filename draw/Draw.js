@@ -2453,8 +2453,7 @@ class Draw {
 
                 const sprite = selectedSprite || _titleset;
 
-                if (pipeDirection !== null &&
-                    (!sprite.complete || !sprite.naturalWidth)) {
+                if (!sprite.complete || !sprite.naturalWidth) {
                     return;
                 }
 
@@ -2519,8 +2518,7 @@ class Draw {
         }
         /* only one cell */
         else {
-            if (pipeDirection !== null &&
-                (!_titleset.complete || !_titleset.naturalWidth)) {
+            if (!_titleset.complete || !_titleset.naturalWidth) {
                 return;
             }
 
@@ -3076,6 +3074,9 @@ class Draw {
 
         const settings = override ? override.offsets : sharedSettings;
         const wingSheet = this._monsters.getTheme();
+        if (!wingSheet.complete || !wingSheet.naturalWidth) {
+            return;
+        }
         const tileSize = this._monsters.getThemeSize();
         const wingSize = this._base * settings.scale;
 
