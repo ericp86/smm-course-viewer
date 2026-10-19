@@ -2154,6 +2154,11 @@ class Draw {
             };
 
             const angleDegrees = cannonAngles[surfaceIndex][rotationIndex];
+            if (angleDegrees === undefined) {
+                console.warn("Unsupported cannon rotation:", rotationIndex);
+                return;
+            }
+
             const angle = angleDegrees * Math.PI / 180;
 
             // Original cannon sprite coordinates.
@@ -2162,9 +2167,14 @@ class Draw {
             const spriteX = 5;
             const spriteY = courseObject.subType ? 6 : 5;
 
-            // Center of the cannon's course tile.
-            const centerX = (x + 0.5) * _base;
-            const centerY = $this._yFix - (y + 0.5) * _base;
+            // Preserve the generic renderer's size-dependent bounds and center.
+            const spriteSize = _base * courseObject.size;
+            const centerX = courseObject.size === 1
+                ? (x + 0.5) * _base
+                : (x - (2 - Math.ceil(courseObject.width / 2))) * _base + spriteSize / 2;
+            const centerY = courseObject.size === 1
+                ? $this._yFix - (y + 0.5) * _base
+                : $this._yFix - (y + 2) * _base + spriteSize / 2;
 
             // Rotate and draw the complete original cannon sprite.
             $this._context.save();
@@ -2178,10 +2188,10 @@ class Draw {
                 spriteY * _ts,
                 _ts,
                 _ts,
-                -_base / 2,
-                -_base / 2,
-                _base,
-                _base
+                -spriteSize / 2,
+                -spriteSize / 2,
+                spriteSize,
+                spriteSize
             );
 
             $this._context.restore();
