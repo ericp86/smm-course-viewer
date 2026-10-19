@@ -1982,6 +1982,9 @@ class Draw {
 
         /* Draw fire bars with variable length and 64 rotation positions. */
         if (courseObject.type === 24) {
+            if (!_titleset.complete || !_titleset.naturalWidth) {
+                return;
+            }
 
             // Eight possible lengths: 4, 6, 8, 10, 12, 14, 16, 18.
             const lengthIndex = (courseObject.flags >>> 22) & 7;
@@ -2052,6 +2055,10 @@ class Draw {
             courseObject.type === 28 ||
             courseObject.type === 40
         ) {
+            if (!_titleset.complete || !_titleset.naturalWidth) {
+                return;
+            }
+
             // Surface orientation stored in bits 25-26.
             const orientation = (courseObject.flags >>> 25) & 3;
 
@@ -2407,7 +2414,9 @@ class Draw {
                 const useCustomPSwitch =
                     courseObject.type === 18 &&
                     !courseObject.subType &&
-                    $this._customPSwitch !== null;
+                    $this._customPSwitch !== null &&
+                    $this._customPSwitch.complete &&
+                    $this._customPSwitch.naturalWidth > 0;
 
 
                 const requestedShoe =
