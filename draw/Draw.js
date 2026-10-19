@@ -1178,6 +1178,7 @@ class Draw {
             _ts = _theme.getThemeSize(),
             _base = $this._base;
         let x = courseObject.x, y = courseObject.y;
+        let wingTransform = null;
 
         // Skip pipes when their atlas artwork is unavailable.
         if (courseObject.type === 9 &&
@@ -1647,6 +1648,20 @@ class Draw {
                     if ($this._gameMode === "WU" && courseObject.type === 52) {
                         y += 0.5;
                     }
+                }
+
+                // Incremental calibration for enlarged Shoe/Stiletto/Yoshi eggs.
+                // Positive X moves right; positive Y moves up.
+                if (courseObject.type === 45 && courseObject.size === 2) {
+                    const enlargedType45Adjustments = {
+                        0: { x: -1, y: 1 },    // Right
+                        1: { x: 0.5, y: 1.5 }, // Left
+                        2: { x: 0, y: -0.5 },  // Up
+                        3: { x: -0.5, y: 2 }   // Down
+                    };
+                    const adjustment = enlargedType45Adjustments[direction];
+                    x += adjustment.x;
+                    y += adjustment.y;
                 }
 
             } // End if (pipe)
@@ -2187,7 +2202,10 @@ class Draw {
 
             // Restore wings for surface-rotated enemies.
             if ((courseObject.flags & 0x02) !== 0) {
-                $this._drawWings(courseObject, x, y);
+                $this._drawWings(courseObject, x, y,
+                    attachedToPipe && pipeRotation
+                        ? { centerX, centerY, angle }
+                        : null);
             }
             return;
 
@@ -2412,6 +2430,9 @@ class Draw {
             const centerY = this._yFix -
                 (y + (minY + maxY + 2) / 2) * _base;
 
+            wingTransform = {
+                centerX, centerY, angle: pipeRotation * Math.PI / 180
+            };
             this._context.save();
             this._context.translate(centerX, centerY);
             this._context.rotate(pipeRotation * Math.PI / 180);
@@ -2531,14 +2552,15 @@ class Draw {
                 "titleset": _titleset, "xT": xT, "yT": yT, "xTs": _ts, "yTs": _ts,
                 "x": x, "y": y, "xExt": 0, "yExt": 0, "xBase": _base, "yBase": _base,
                 "size": courseObject.size, "width": courseObject.width,
-                "rotation": pipeRotation
+                "rotation": pipeRotation,
+                "wingTransform": pipeRotation ? (wingTransform = {}) : null
             };
             $this._paintObject(objectPaint);
         }
 
         // Draw wings independently from the object's body sprite.
         if ((courseObject.flags & 0x02) !== 0) {
-            $this._drawWings(courseObject, x, y);
+            $this._drawWings(courseObject, x, y, wingTransform);
         }
     }
 
@@ -2546,7 +2568,7 @@ class Draw {
      * Draw wings for supported winged objects.
      * Wing offsets are measured in course grid tiles.
      */
-    _drawWings(courseObject, x, y) {
+    _drawWings(courseObject, x, y, bodyTransform = null) {
         const oneWingTypes = new Set([
             1, 3, 15, 25, 28, 39, 40,
             45, 46, 52, 56, 58, 61, 62
@@ -3088,21 +3110,101 @@ class Draw {
             ];
 
         wings.forEach(wing => {
-            const drawX = (x + wing.x) * this._base;
-            const drawY = this._yFix -
+            let drawX = (x + wing.x) * this._base;
+            let drawY = this._yFix -
                 (y + settings.y + settings.scale) * this._base;
 
-            this._context.drawImage(
-                wingSheet,
-                wing.xT * tileSize,
-                2 * tileSize,
-                tileSize,
-                tileSize,
-                drawX,
-                drawY,
-                wingSize,
-                wingSize
-            );
+            // Move each wing center with the rotated body.
+            if (bodyTransform && bodyTransform.angle) {
+                const { centerX, centerY, angle } = bodyTransform;
+                const dx = drawX + wingSize / 2 - centerX;
+                const dy = drawY + wingSize / 2 - centerY;
+                const cos = Math.cos(angle), sin = Math.sin(angle);
+                drawX = centerX + dx * cos - dy * sin - wingSize / 2;
+                drawY = centerY + dx * sin + dy * cos - wingSize / 2;
+            }
+
+            // Enlarged, pipe-attached one-wing calibration.
+            // Positive X moves right; positive Y moves up.
+            // Directions: 0 Right, 1 Left, 2 Up, 3 Down.
+            const enlargedPipeWingAdjustments = {
+                spinyBuzzySpikeTop: {
+                    0: { x: -0.5, y: -0.5 }, // Right
+                    1: { x: 0.5, y: 0.5 },   // Left
+                    2: { x: 0.5, y: -0.5 },  // Up
+                    3: { x: -0.5, y: 0.5 }   // Down
+                },
+                nsmbKoopa: {
+                    0: { x: -1, y: -0.5 }, // Right
+                    1: { x: 1, y: 0.5 }, // Left
+                    2: { x: 0.5, y: -1 }, // Up
+                    3: { x: -0.5, y: 1 }  // Down
+                }
+            };
+
+            if (enlarged && wingCount === 1 &&
+                courseObject.linkId !== -1) {
+
+                const isShelledEnemy = [25, 28, 40].includes(courseObject.type);
+                const isNsmbKoopa =
+                    this._gameMode === "WU" && courseObject.type === 1;
+
+                if (isShelledEnemy || isNsmbKoopa) {
+                    const pipe = this._objects.find(object =>
+                        object.type === 9 &&
+                        object.linkId === courseObject.linkId);
+
+                    if (pipe) {
+                        const direction = (pipe.flags & 0x60) / 0x20;
+                        const group = isNsmbKoopa
+                            ? "nsmbKoopa"
+                            : "spinyBuzzySpikeTop";
+
+                        const adjustment =
+                            enlargedPipeWingAdjustments[group][direction];
+
+                        if (adjustment) {
+                            drawX += adjustment.x * this._base;
+                            drawY -= adjustment.y * this._base;
+                        }
+                    }
+                }
+            }
+
+            if (bodyTransform && bodyTransform.angle) {
+                // Rotate the artwork around its own center.
+                // Its center already follows the body's rotation.
+                this._context.save();
+                this._context.translate(
+                    drawX + wingSize / 2,
+                    drawY + wingSize / 2
+                );
+                this._context.rotate(bodyTransform.angle);
+                this._context.drawImage(
+                    wingSheet,
+                    wing.xT * tileSize,
+                    2 * tileSize,
+                    tileSize,
+                    tileSize,
+                    -wingSize / 2,
+                    -wingSize / 2,
+                    wingSize,
+                    wingSize
+                );
+                this._context.restore();
+            } else {
+                this._context.drawImage(
+                    wingSheet,
+                    wing.xT * tileSize,
+                    2 * tileSize,
+                    tileSize,
+                    tileSize,
+                    drawX,
+                    drawY,
+                    wingSize,
+                    wingSize
+                );
+            }
         });
     }
 
@@ -3153,6 +3255,11 @@ class Draw {
                 xCenter = xBase / 2.0, yCenter = yBase / 2.0;
             let xRotation = x + xCenter,
                 yRotation = y + yCenter;
+            if (_objectPaint.wingTransform) {
+                Object.assign(_objectPaint.wingTransform, {
+                    centerX: xRotation, centerY: yRotation, angle: degree
+                });
+            }
             this._context.save();
             this._context.translate(xRotation, yRotation);
             this._context.rotate(degree);
