@@ -326,6 +326,11 @@ class Draw {
 
         // SMB3 non-Castle goal-area scenery.
         if (mode === "M3") {
+            if (!goalObject) {
+                return;
+            }
+
+            this._context.save();
 
             // Shared hill sprite dimensions.
             // Source: columns 12-15, rows 12-15.
@@ -333,7 +338,7 @@ class Draw {
             const hillHeight = 4.5;
 
             // Follow the goal area's vertical position.
-            const goalY = goalObject ? goalObject.y : 2;
+            const goalY = goalObject.y;
             const drawY = this._yFix - (goalY + 3.5) * base;
 
             // ------------------------------------------
@@ -635,6 +640,9 @@ class Draw {
                 this._context.restore();
             }
 
+            this._context.restore();
+
+            // Restore the caller's drawing state.
             this._context.restore();
 
             return;
