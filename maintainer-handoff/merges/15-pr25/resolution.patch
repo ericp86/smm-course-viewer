@@ -1,0 +1,49 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -41,7 +41,6 @@
+         /*global MonsterDraw */
+         /*eslint no-undef: "error"*/
+         this._monsters = new MonsterDraw(this._gameMode, this._gameTheme);
+-<<<<<<< HEAD
+         // Original Super Mario Maker track artwork.
+         this._railSprite = new Image();
+         this._railSprite.src = "./layout/draw/format/59.png";
+@@ -91,7 +90,6 @@
+         this._angryWigglerBody = new Image();
+         this._angryWigglerBody.src =
+             `./layout/draw/custom/${wigglerFolders[this._gameMode]}/${angryWigglerFilenames[this._gameMode]}`;
+-=======
+         // Playing-card symbols for linked doors.
+         this._doorSymbols = {};
+ 
+@@ -100,17 +98,16 @@
+             image.src = `./layout/draw/custom/symbols/${symbol}.png`;
+             this._doorSymbols[symbol] = image;
+         });
+->>>>>>> 7b99e2d24d71bccf47acd685c6364dc62d0d7d9d
+ 
+         this._images = [
+             this._blocks.getTheme(),
+             this._monsters.getTheme(),
+-<<<<<<< HEAD
+             this._railSprite,
+             this._goalTape,
+             this._buzzyShelmet,
+             this._spinyShelmet,
+-            this._angryWigglerBody
++            this._angryWigglerBody,
++            ...Object.values(this._doorSymbols)
+         ];
+ 
+         // Load custom P Switch artwork for SMB1 and NSMBU.
+@@ -151,10 +148,6 @@
+                 this._shoeSprites.stiletto
+             );
+         }
+-=======
+-            ...Object.values(this._doorSymbols)
+-        ];
+->>>>>>> 7b99e2d24d71bccf47acd685c6364dc62d0d7d9d
+         /* draw configurations */
+         let compare = function(a,b) {
+             if (a.z < b.z) { return -1; }

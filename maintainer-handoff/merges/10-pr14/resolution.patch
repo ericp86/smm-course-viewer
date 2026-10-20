@@ -1,0 +1,101 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -41,18 +41,11 @@
+         /*global MonsterDraw */
+         /*eslint no-undef: "error"*/
+         this._monsters = new MonsterDraw(this._gameMode, this._gameTheme);
+-<<<<<<< HEAD
+         // Original Super Mario Maker track artwork.
+         this._railSprite = new Image();
+         this._railSprite.src = "./layout/draw/format/59.png";
+         this._goalTape = new Image();
+         this._goalTape.src = "./layout/draw/format/27-0.png";
+-        this._images = [
+-            this._blocks.getTheme(),
+-            this._monsters.getTheme(),
+-            this._railSprite,
+-            this._goalTape
+-=======
+         // Load Shelmet artwork for the current game style.
+         const shelmetFolders = {
+             M1: "smb1",
+@@ -87,9 +80,10 @@
+         this._images = [
+             this._blocks.getTheme(),
+             this._monsters.getTheme(),
++            this._railSprite,
++            this._goalTape,
+             this._buzzyShelmet,
+             this._spinyShelmet
+->>>>>>> 16daacfc6041866c5ef8f9c34311b6818cfb29c3
+         ];
+         /* draw configurations */
+         let compare = function(a,b) {
+@@ -1019,7 +1013,6 @@
+             _base = $this._base;
+         let x = courseObject.x, y = courseObject.y;
+ 
+-<<<<<<< HEAD
+         // Skip skull coasters when their tileset is unavailable.
+         if (courseObject.type === 36 &&
+             (!_titleset.complete || !_titleset.naturalWidth)) {
+@@ -1525,6 +1518,29 @@
+                 mushroomX, mushroomY,
+                 _base, _base
+             );
++
++            return;
++        }
++
++        // Draw empty Buzzy and Spiny Shelmets using custom artwork.
++        if (
++            (courseObject.type === 25 || courseObject.type === 28) &&
++            (courseObject.flags & 0x4) !== 0
++        ) {
++            const shelmet = courseObject.type === 25
++                ? this._spinyShelmet
++                : this._buzzyShelmet;
++
++            if (shelmet && shelmet.complete && shelmet.naturalWidth > 0) {
++                this._context.drawImage(
++                    shelmet,
++                    0, 0,
++                    shelmet.naturalWidth, shelmet.naturalHeight,
++                    x * _base,
++                    this._yFix - (y + 1) * _base,
++                    _base, _base
++                );
++            }
+ 
+             return;
+         }
+@@ -1600,29 +1616,6 @@
+                 $this._context.restore();
+                 return;
+             }
+-=======
+-        // Draw empty Buzzy and Spiny Shelmets using custom artwork.
+-        if (
+-            (courseObject.type === 25 || courseObject.type === 28) &&
+-            (courseObject.flags & 0x4) !== 0
+-        ) {
+-            const shelmet = courseObject.type === 25
+-                ? this._spinyShelmet
+-                : this._buzzyShelmet;
+-
+-            if (shelmet && shelmet.complete && shelmet.naturalWidth > 0) {
+-                this._context.drawImage(
+-                    shelmet,
+-                    0, 0,
+-                    shelmet.naturalWidth, shelmet.naturalHeight,
+-                    x * _base,
+-                    this._yFix - (y + 1) * _base,
+-                    _base, _base
+-                );
+-            }
+-
+-            return;
+->>>>>>> 16daacfc6041866c5ef8f9c34311b6818cfb29c3
+         }
+ 
+         /* multiples cells */

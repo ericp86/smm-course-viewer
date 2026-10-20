@@ -1,0 +1,113 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -508,7 +508,54 @@
+             _base = $this._base;
+         let x = courseObject.x, y = courseObject.y;
+ 
+-<<<<<<< HEAD
++        // Skip skull coasters when their tileset is unavailable.
++        if (courseObject.type === 36 &&
++            (!_titleset.complete || !_titleset.naturalWidth)) {
++            return;
++        }
++
++        // Center objects attached to curved tracks at the arc midpoint.
++        if (courseObject.type !== 59 && courseObject.linkId !== -1) {
++            const track = this._objects.find(obj =>
++                obj.type === 59 && obj.linkId === courseObject.linkId
++            );
++
++            if (track) {
++                const orientation = (track.flags >>> 22) & 7;
++
++                const curves = {
++                    4: { cx: 2, cy: 2, angle: 3 * Math.PI / 4 },
++                    5: { cx: 0, cy: 0, angle: -Math.PI / 4 },
++                    6: { cx: 2, cy: 0, angle: 5 * Math.PI / 4 },
++                    7: { cx: 0, cy: 2, angle: Math.PI / 4 }
++                };
++
++                const curve = curves[orientation];
++
++                if (curve) {
++                    const radius = 2;
++                    const targetX = track.x + curve.cx +
++                        radius * Math.cos(curve.angle);
++
++                    // Canvas angles use downward-positive Y.
++                    const targetY = track.y + curve.cy -
++                        radius * Math.sin(curve.angle);
++
++                    const size = courseObject.size;
++
++                    // Account for _paintObject's sprite origin.
++                    if (size === 1) {
++                        x = targetX - 0.5;
++                        y = targetY - 0.5;
++                    } else {
++                        x = targetX - size / 2 +
++                            (2 - Math.ceil(courseObject.width / 2));
++                        y = targetY - size / 2 + 0.5;
++                    }
++                }
++            }
++        }
++
+         /* Draw skewers as one complete sprite so rotation works correctly. */
+         if (courseObject.type === 12 && courseObject.subType === 1) {
+             let spriteWidth = 4 * _base,
+@@ -655,54 +702,6 @@
+             );
+             $this._context.restore();
+             return;
+-=======
+-        // Skip skull coasters when their tileset is unavailable.
+-        if (courseObject.type === 36 &&
+-            (!_titleset.complete || !_titleset.naturalWidth)) {
+-            return;
+-        }
+-
+-        // Center objects attached to curved tracks at the arc midpoint.
+-        if (courseObject.type !== 59 && courseObject.linkId !== -1) {
+-            const track = this._objects.find(obj =>
+-                obj.type === 59 && obj.linkId === courseObject.linkId
+-            );
+-
+-            if (track) {
+-                const orientation = (track.flags >>> 22) & 7;
+-
+-                const curves = {
+-                    4: { cx: 2, cy: 2, angle: 3 * Math.PI / 4 },
+-                    5: { cx: 0, cy: 0, angle: -Math.PI / 4 },
+-                    6: { cx: 2, cy: 0, angle: 5 * Math.PI / 4 },
+-                    7: { cx: 0, cy: 2, angle: Math.PI / 4 }
+-                };
+-
+-                const curve = curves[orientation];
+-
+-                if (curve) {
+-                    const radius = 2;
+-                    const targetX = track.x + curve.cx +
+-                        radius * Math.cos(curve.angle);
+-
+-                    // Canvas angles use downward-positive Y.
+-                    const targetY = track.y + curve.cy -
+-                        radius * Math.sin(curve.angle);
+-
+-                    const size = courseObject.size;
+-
+-                    // Account for _paintObject's sprite origin.
+-                    if (size === 1) {
+-                        x = targetX - 0.5;
+-                        y = targetY - 0.5;
+-                    } else {
+-                        x = targetX - size / 2 +
+-                            (2 - Math.ceil(courseObject.width / 2));
+-                        y = targetY - size / 2 + 0.5;
+-                    }
+-                }
+-            }
+->>>>>>> fcb4f3b39eb45f9a05ac569a36f765a701895655
+         }
+ 
+         /* multiples cells */

@@ -1,0 +1,97 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -41,23 +41,16 @@
+         /*global MonsterDraw */
+         /*eslint no-undef: "error"*/
+         this._monsters = new MonsterDraw(this._gameMode, this._gameTheme);
+-<<<<<<< HEAD
+         // Original Super Mario Maker track artwork.
+         this._railSprite = new Image();
+         this._railSprite.src = "./layout/draw/format/59.png";
+-
+-        this._images = [
+-            this._blocks.getTheme(),
+-            this._monsters.getTheme(),
+-            this._railSprite
+-=======
+         this._goalTape = new Image();
+         this._goalTape.src = "./layout/draw/format/27-0.png";
+         this._images = [
+             this._blocks.getTheme(),
+             this._monsters.getTheme(),
++            this._railSprite,
+             this._goalTape
+->>>>>>> 73a990cc04d20f761f825da4a5063de04af62962
+         ];
+         /* draw configurations */
+         let compare = function(a,b) {
+@@ -539,7 +532,10 @@
+         /* allloaded images */
+         allloaded = function() {
+             if(loadedCount === imageCount) {
+-<<<<<<< HEAD
++                const goalObject = _objects.find(function(courseObject) {
++                    return courseObject.type === 27;
++                });
++                $this._drawGoalScenery(goalObject);
+ 
+                 // Pass 1: Draw air signs behind starting arrows.
+                 _objects.forEach(function(courseObject) {
+@@ -562,25 +558,15 @@
+ 
+                     if (type === 66 || type === 38) return;
+ 
++                    // Castle bridges should only render in Castle themes.
++                    if (type === 49 && $this._gameTheme !== "castle") {
++                        return;
++                    }
++
+                     if (type === 59) {
+                         $this._drawRail(courseObject);
+                     }
+                     else if($this._blocks.hasDraw(type)) {
+-=======
+-                const goalObject = _objects.find(function(courseObject) {
+-                    return courseObject.type === 27;
+-                });
+-                $this._drawGoalScenery(goalObject);
+-                _objects.forEach(function(courseObject) {
+-                    let type = courseObject.type;
+-
+-                    // Castle bridges should only render in Castle themes.
+-                    if (type === 49 && $this._gameTheme !== "castle") {
+-                        return;
+-                    }
+-
+-                    if($this._blocks.hasDraw(type)) {
+->>>>>>> 73a990cc04d20f761f825da4a5063de04af62962
+                         $this._drawObjectFromTheme($this._blocks, courseObject);
+                     }
+                     else if ($this._monsters.hasDraw(type)) {
+@@ -928,7 +914,6 @@
+             _ts = _theme.getThemeSize(),
+             _base = $this._base;
+         let x = courseObject.x, y = courseObject.y;
+-<<<<<<< HEAD
+ 
+         // Skip skull coasters when their tileset is unavailable.
+         if (courseObject.type === 36 &&
+@@ -1123,7 +1108,9 @@
+                 spriteWidth, spriteHeight
+             );
+             $this._context.restore();
+-=======
++            return;
++        }
++
+         /* Draw the Castle axe goal for all game styles. */
+         if (courseObject.type === 27 &&
+             $this._gameTheme === "castle") {
+@@ -1364,7 +1351,6 @@
+                 _base, _base
+             );
+ 
+->>>>>>> 73a990cc04d20f761f825da4a5063de04af62962
+             return;
+         }
+ 

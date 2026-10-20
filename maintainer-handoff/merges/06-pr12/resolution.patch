@@ -1,0 +1,24 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -590,8 +590,8 @@
+         },
+         /* allloaded images */
+         allloaded = function() {
+-<<<<<<< HEAD
+-            if(loadedCount === imageCount) {
++            if (loadedCount === imageCount && $this._backgroundReady !== false && !rendered) {
++                rendered = true;
+                 const goalObject = _objects.find(function(courseObject) {
+                     return courseObject.type === 27;
+                 });
+@@ -613,10 +613,6 @@
+                 });
+ 
+                 // Pass 3: Draw all remaining objects.
+-=======
+-            if (loadedCount === imageCount && $this._backgroundReady !== false && !rendered) {
+-                rendered = true;
+->>>>>>> b0a20faf0251fe4fd01ea6027e134d0b76190aa3
+                 _objects.forEach(function(courseObject) {
+                     let type = courseObject.type;
+ 

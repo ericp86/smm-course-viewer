@@ -1,0 +1,19 @@
+{
+  "head": "e14a6c1d5956b15cbfdaf00bd4bd1713a5dfaae9",
+  "tree": "c75546d5456ba655c7a1afa59ddc31dc80186347",
+  "actualPrMerges": 17,
+  "clean": 3,
+  "conflicting": 14,
+  "allIntermediateTreesMatch": true,
+  "trackedFiles": 233,
+  "approvedFileHashesMatch": 233,
+  "pngsMatch": 173,
+  "courseFixturesMatch": 2,
+  "allPinnedPrHeadsAreAncestors": true,
+  "conflictMarkers": [],
+  "workingTreeClean": true,
+  "firstParentCommits": 19,
+  "safetyDiffMatchesApproved": true,
+  "syntaxFiles": 9,
+  "parserObjects": 115
+}

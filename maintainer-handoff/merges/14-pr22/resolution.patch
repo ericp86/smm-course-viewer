@@ -1,0 +1,92 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -41,7 +41,6 @@
+         /*global MonsterDraw */
+         /*eslint no-undef: "error"*/
+         this._monsters = new MonsterDraw(this._gameMode, this._gameTheme);
+-<<<<<<< HEAD
+         // Original Super Mario Maker track artwork.
+         this._railSprite = new Image();
+         this._railSprite.src = "./layout/draw/format/59.png";
+@@ -118,8 +117,7 @@
+ 
+         if (this._customPSwitch) {
+             this._images.push(this._customPSwitch);
+-=======
+-        this._images = [this._blocks.getTheme(), this._monsters.getTheme()];
++        }
+ 
+         // Custom Shoe Goomba and Stiletto artwork for SMB1 and SMB3.
+         this._shoeSprites = null;
+@@ -140,7 +138,6 @@
+                 this._shoeSprites.shoe,
+                 this._shoeSprites.stiletto
+             );
+->>>>>>> f2bac6fabcf114d4cb700a6771dd62ddebba53cb
+         }
+         /* draw configurations */
+         let compare = function(a,b) {
+@@ -1746,7 +1743,6 @@
+             ext.forEach(function(drawExt) {
+                 let opacity = (drawExt.opacity) ? drawExt.opacity : null,
+                     rotation = (drawExt.rotation) ? drawExt.rotation : null;
+-<<<<<<< HEAD
+                 // Use custom artwork for Angry Wiggler body segments.
+                 let spriteSheet = _titleset;
+                 let spriteX = drawExt.xT;
+@@ -1779,8 +1775,25 @@
+                     spriteWidth = spriteSheet.naturalWidth;
+                     spriteHeight = spriteSheet.naturalHeight;
+                 }
++
++                const requestedShoe =
++                    courseObject.type === 45 && $this._shoeSprites
++                        ? ((courseObject.flags & 0x04)
++                            ? $this._shoeSprites.stiletto
++                            : $this._shoeSprites.shoe)
++                        : null;
++
++                const customShoe = requestedShoe && requestedShoe.complete &&
++                    requestedShoe.naturalWidth > 0 ? requestedShoe : null;
++                if (customShoe) {
++                    spriteSheet = customShoe;
++                    spriteX = 0; spriteY = 0;
++                    spriteWidth = spriteSheet.naturalWidth;
++                    spriteHeight = spriteSheet.naturalHeight;
++                }
+                 var objectPaint = {
+                     "titleset": spriteSheet,
++                    "customShoe": Boolean(customShoe),
+                     "xT": spriteX,
+                     "yT": spriteY,
+                     "xTs": spriteWidth,
+@@ -1796,29 +1809,6 @@
+                     "opacity": opacity,
+                     "rotation": rotation
+                 };
+-=======
+-
+-                const requestedShoe =
+-                    courseObject.type === 45 && $this._shoeSprites
+-                        ? ((courseObject.flags & 0x04)
+-                            ? $this._shoeSprites.stiletto
+-                            : $this._shoeSprites.shoe)
+-                        : null;
+-
+-                const customShoe = requestedShoe && requestedShoe.complete &&
+-                    requestedShoe.naturalWidth > 0 ? requestedShoe : null;
+-                var objectPaint = {
+-                    "titleset":customShoe || _titleset,
+-                    "xT":customShoe ? 0 : drawExt.xT,
+-                    "yT":customShoe ? 0 : drawExt.yT,
+-                    "xTs":customShoe ? customShoe.naturalWidth : _ts,
+-                    "yTs":customShoe ? customShoe.naturalHeight : _ts,
+-                    "x":x, "y":y, "xExt":drawExt.x, "yExt":drawExt.y,
+-                    "xBase":_base, "yBase":_base,
+-                    "customShoe":Boolean(customShoe),
+-                    "size":courseObject.size, "width":courseObject.width, 
+-                    "opacity":opacity, "rotation":rotation};
+->>>>>>> f2bac6fabcf114d4cb700a6771dd62ddebba53cb
+                 $this._paintObject(objectPaint);
+             });
+         }

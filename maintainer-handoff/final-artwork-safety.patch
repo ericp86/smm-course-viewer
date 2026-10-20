@@ -1,0 +1,37 @@
+diff --git a/draw/Draw.js b/draw/Draw.js
+index 58db8f3ee8b4349ac40b7d032ff5de1a5f6cc354..833d5e1a7ef6ceef314a2c3ae018502a1f58fc36 100644
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -285,6 +285,10 @@ class Draw {
+         const ts = this._monsters.getThemeSize();
+         const base = this._base;
+ 
++        if (!tileset.complete || !tileset.naturalWidth) {
++            return;
++        }
++
+         // Castle theme: all four game styles.
+         if (theme === "castle") {
+ 
+@@ -1099,6 +1103,21 @@ class Draw {
+         let x = courseObject.x, y = courseObject.y;
+         let wingTransform = null;
+ 
++        // These specialized paths draw directly from the atlas.
++        if (
++            (
++                courseObject.type === 27 ||
++                courseObject.type === 47 ||
++                courseObject.type === 54 ||
++                courseObject.type === 66 ||
++                courseObject.type === 67 ||
++                (courseObject.type === 12 && courseObject.subType === 1)
++            ) &&
++            (!_titleset.complete || !_titleset.naturalWidth)
++        ) {
++            return;
++        }
++
+         // Skip skull coasters when their tileset is unavailable.
+         if ((courseObject.type === 36 || courseObject.type === 9) &&
+             (!_titleset.complete || !_titleset.naturalWidth)) {

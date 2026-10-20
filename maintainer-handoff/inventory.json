@@ -1,0 +1,290 @@
+[
+  {
+    "number": 7,
+    "title": "Fix object rotation, orientation, and rendering depth",
+    "headBranch": "fix/object-depth-rotation",
+    "headSha": "dd8eefd6022f32e01eb47785b35490568b94e7e4",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Signed and fractional depth sorting; direction parsing; gates, Burners, signs and checkpoint rendering.",
+    "dependencies": "Independent foundation; merge before track XY normalization and later drawing passes.",
+    "files": [
+      "draw/Draw.js",
+      "draw/MonsterDraw.js",
+      "lib/MonsterObject.js",
+      "lib/SmmCourseViewer.js"
+    ]
+  },
+  {
+    "number": 8,
+    "title": "Add goal rendering and scenery across game styles",
+    "headBranch": "fix/goal-rendering-scenery",
+    "headSha": "73a990cc04d20f761f825da4a5063de04af62962",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Style/theme-specific goals and surrounding scenery; missing-goal, canvas-state and optional-image protection.",
+    "dependencies": "Independent standalone; shares image registration, drawing passes and specialized cases with later renderers.",
+    "files": [
+      "draw/BlockDraw.js",
+      "draw/Draw.js"
+    ]
+  },
+  {
+    "number": 9,
+    "title": "Fix cannon rendering and rotation for all mounting surfaces",
+    "headBranch": "fix/cannon-rendering-rotation",
+    "headSha": "e5352e338974e7fa3b3fc18352baeb379c78c1de",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Cannon source crops, mounting angles and size-dependent centers; invalid-rotation guard.",
+    "dependencies": "Independent standalone; #7 supplies general direction/depth foundation, but cannons decode their own flags.",
+    "files": [
+      "draw/Draw.js"
+    ]
+  },
+  {
+    "number": 10,
+    "title": "Fix track rendering, orientation, and endpoint caps",
+    "headBranch": "fix/track-rendering-endpoints",
+    "headSha": "ae69e2d237a7e7bcd3860da8ccc0dfd77449d730",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Fractional track coordinates, sprite segments, curves and endpoint A/B mapping; artwork protection.",
+    "dependencies": "Independent standalone; current implementation should precede #11.",
+    "files": [
+      "draw/Draw.js",
+      "lib/SmmCourseViewer.js"
+    ]
+  },
+  {
+    "number": 11,
+    "title": "Fix skull coaster rendering positioning and object positioning on curved tracks",
+    "headBranch": "fix/skull-coaster-rendering-positioning",
+    "headSha": "fcb4f3b39eb45f9a05ac569a36f765a701895655",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Single attached skull versus four free skulls; linked curved-track placement; rail/coaster artwork protection.",
+    "dependencies": "Contains older track work; retain current #10 geometry and readiness protections when merging. Description incorrectly cites #4; actual predecessor is #10.",
+    "files": [
+      "draw/Draw.js",
+      "draw/MonsterDraw.js",
+      "lib/SmmCourseViewer.js"
+    ]
+  },
+  {
+    "number": 12,
+    "title": "Add Castle lava rendering with foreground layering",
+    "headBranch": "fix/castle-lava-rendering",
+    "headSha": "b0a20faf0251fe4fd01ea6027e134d0b76190aa3",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Castle-only foreground lava; background/object completion coordination and artwork readiness.",
+    "dependencies": "Independent standalone single-pass lava; combine its background gate with existing image completion. Approved combined viewer requires an extra background lava pass.",
+    "files": [
+      "draw/Draw.js"
+    ]
+  },
+  {
+    "number": 13,
+    "title": "Fix Spiny, Buzzy Beetle, and Spike Top surface orientation",
+    "headBranch": "fix/enemy-surface-orientation",
+    "headSha": "dce2654abbcc4d22cac98f00e95c296559ca4864",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Surface orientation and flipping for Spiny, Buzzy Beetle and Spike Top.",
+    "dependencies": "Independent standalone; later combined surface path must coexist with #14, #21, #23 and #24.",
+    "files": [
+      "draw/Draw.js"
+    ]
+  },
+  {
+    "number": 14,
+    "title": "Add Spiny and Buzzy Shelmet rendering support",
+    "headBranch": "feat/shelmet-rendering",
+    "headSha": "16daacfc6041866c5ef8f9c34311b6818cfb29c3",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Empty Spiny/Buzzy Shelmet custom artwork and appropriate theme colors.",
+    "dependencies": "Independent standalone; order after #13/#24 makes empty-Shelmet precedence explicit. No new winged-empty-Shelmet behavior.",
+    "files": [
+      "draw/Draw.js",
+      "layout/draw/custom/nsmbu/buzzy-shelmet.png",
+      "layout/draw/custom/nsmbu/spiny-shelmet.png",
+      "layout/draw/custom/smb1/buzzy-shelmet-black.png",
+      "layout/draw/custom/smb1/buzzy-shelmet-green.png",
+      "layout/draw/custom/smb1/spiny-shelmet.png",
+      "layout/draw/custom/smb3/buzzy-shelmet-black.png",
+      "layout/draw/custom/smb3/buzzy-shelmet-green.png",
+      "layout/draw/custom/smb3/spiny-shelmet.png",
+      "layout/draw/custom/smw/buzzy-shelmet.png",
+      "layout/draw/custom/smw/spiny-shelmet.png"
+    ]
+  },
+  {
+    "number": 15,
+    "title": "Fix fire bar rendering, length, and rotation",
+    "headBranch": "fix/fire-bar-rendering",
+    "headSha": "368aaa17eb8ecc19dcc6fced3c5efebd426786df",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Fire Bar variable lengths, unsigned rotation data and guarded sprite drawing.",
+    "dependencies": "Independent; overlaps only the shared drawing method.",
+    "files": [
+      "draw/Draw.js"
+    ]
+  },
+  {
+    "number": 16,
+    "title": "Fix Wiggler rendering across all game styles",
+    "headBranch": "fix/wiggler-rendering",
+    "headSha": "7ebfc4aeb919bccccf8e0a671b54f065bf21bc29",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Wiggler body/head/flower composition and loaded custom Angry Wiggler body artwork.",
+    "dependencies": "Independent; requires combined #21 pipe-aware composition contract in compatibility patch.",
+    "files": [
+      "draw/Draw.js",
+      "draw/MonsterDraw.js",
+      "layout/draw/custom/nsmbu/angry-wiggler-body-nsmb.png",
+      "layout/draw/custom/smb1/angry-wiggler-body-smb1.png",
+      "layout/draw/custom/smb3/angry-wiggler-body-smb3.png",
+      "layout/draw/custom/smw/angry-wiggler-body-smw.png"
+    ]
+  },
+  {
+    "number": 17,
+    "title": "Fix P Switch sprites in SMB1 and NSMBU",
+    "headBranch": "fix/p-switch-sprites",
+    "headSha": "e5192068dfaea0ba6968a446c15425eafcfe2e6f",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Custom P Switch sprites for M1/WU with atlas fallback; preserve P Doors.",
+    "dependencies": "Independent; union image registration and custom selection with other sprite PRs.",
+    "files": [
+      "draw/Draw.js",
+      "layout/draw/custom/nsmbu/p-switch.png",
+      "layout/draw/custom/smb1/p-switch.png"
+    ]
+  },
+  {
+    "number": 21,
+    "title": "Fix pipe-attached enemy and object positioning",
+    "headBranch": "fix/pipe-attached-enemies-combined",
+    "headSha": "5feca7b5f7732538d69f999eebfacbeaafcaa58e",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Pipe-attached enemy/item/coin placement, finalized offsets and foreground pipe occlusion.",
+    "dependencies": "Independent calibrated branch. Final combined output requires #16/#22 where their custom features apply, plus #23 and pivot/dispatch compatibility. Do not repeat its published type-45 calibration.",
+    "files": [
+      "draw/Draw.js"
+    ]
+  },
+  {
+    "number": 22,
+    "title": "Add custom Shoe Goomba and Stiletto sprites",
+    "headBranch": "fix/shoe-goomba-stiletto-artwork",
+    "headSha": "f2bac6fabcf114d4cb700a6771dd62ddebba53cb",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Custom Shoe/Stiletto artwork, bottom anchoring and aspect ratio with safe atlas fallback.",
+    "dependencies": "Independent; precede #23 to preserve approved Shoe/Stiletto aspect ratio and wing behavior.",
+    "files": [
+      "draw/Draw.js",
+      "layout/draw/custom/smb1/shoe-goomba.png",
+      "layout/draw/custom/smb1/stiletto-goomba.png",
+      "layout/draw/custom/smb3/shoe-goomba.png",
+      "layout/draw/custom/smb3/stiletto-goomba.png"
+    ]
+  },
+  {
+    "number": 23,
+    "title": "Add wing rendering for objects across all game styles",
+    "headBranch": "fix/winged-objects",
+    "headSha": "7c9caa284b5381fd762c7da8f1fa46e076f4c201",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "One/two wings, supported-object dispatch, game-style offsets and wing artwork readiness.",
+    "dependencies": "Independent free-standing wings. Final pipe/wing behavior requires #21, custom Shoes from #22, and separate integration-only pivot/artwork/calibration work.",
+    "files": [
+      "draw/Draw.js"
+    ]
+  },
+  {
+    "number": 24,
+    "title": "Fix theme specific enemy colors",
+    "headBranch": "fix/theme-specific-enemy-colors",
+    "headSha": "b4df66491d2f6ad853761cc44b5f7a0c90b34dd9",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Theme-dependent Buzzy Beetle/Fire Piranha colors without changing metadata.",
+    "dependencies": "Independent standalone; generic extension gets mode/theme parameters. #13/#21 specialized bodies need equivalent color selection in compatibility patch.",
+    "files": [
+      "draw/Draw.js",
+      "draw/MonsterDraw.js"
+    ]
+  },
+  {
+    "number": 25,
+    "title": "Feature/linked door symbols",
+    "headBranch": "feature/linked-door-symbols",
+    "headSha": "7b99e2d24d71bccf47acd685c6364dc62d0d7d9d",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Playing-card symbols on linked normal/P/key doors with safe image completion.",
+    "dependencies": "Independent; union symbol images with other optional assets; preserve its safe completion behavior.",
+    "files": [
+      "draw/Draw.js",
+      "layout/draw/custom/symbols/club.png",
+      "layout/draw/custom/symbols/diamond.png",
+      "layout/draw/custom/symbols/heart.png",
+      "layout/draw/custom/symbols/spade.png"
+    ]
+  },
+  {
+    "number": 26,
+    "title": "Fix UTF-16BE decoding of Unicode course names",
+    "headBranch": "fix/unicode-course-names",
+    "headSha": "aea7027b12014b9a45ecdfd5254dc9e89f5e3f9d",
+    "headRepositoryOwnerLogin": "ericp86",
+    "headRepositoryName": "smm-course-viewer",
+    "baseBranch": "master",
+    "state": "OPEN",
+    "purpose": "Decode big-endian UTF-16 course names without dropping non-ASCII code units or surrogate pairs.",
+    "dependencies": "Independent; first to separate parser-only work.",
+    "files": [
+      "lib/SmmCourseViewer.js"
+    ]
+  }
+]

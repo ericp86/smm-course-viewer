@@ -1,0 +1,151 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -41,7 +41,6 @@
+         /*global MonsterDraw */
+         /*eslint no-undef: "error"*/
+         this._monsters = new MonsterDraw(this._gameMode, this._gameTheme);
+-<<<<<<< HEAD
+         // Original Super Mario Maker track artwork.
+         this._railSprite = new Image();
+         this._railSprite.src = "./layout/draw/format/59.png";
+@@ -49,17 +48,12 @@
+         this._goalTape.src = "./layout/draw/format/27-0.png";
+         // Load Shelmet artwork for the current game style.
+         const shelmetFolders = {
+-=======
+-        // Load custom Angry Wiggler body artwork for each game style.
+-        const wigglerFolders = {
+->>>>>>> 7ebfc4aeb919bccccf8e0a671b54f065bf21bc29
+             M1: "smb1",
+             M3: "smb3",
+             MW: "smw",
+             WU: "nsmbu"
+         };
+ 
+-<<<<<<< HEAD
+         const shelmetFolder = shelmetFolders[this._gameMode];
+ 
+         // SMB1 and SMB3 Buzzy Shelmets use theme-dependent colors.
+@@ -82,7 +76,10 @@
+         this._spinyShelmet = new Image();
+         this._spinyShelmet.src =
+             `./layout/draw/custom/${shelmetFolder}/spiny-shelmet.png`;
+-=======
++
++        const wigglerFolders = {
++            M1: "smb1", M3: "smb3", MW: "smw", WU: "nsmbu"
++        };
+         const angryWigglerFilenames = {
+             M1: "angry-wiggler-body-smb1.png",
+             M3: "angry-wiggler-body-smb3.png",
+@@ -93,22 +90,16 @@
+         this._angryWigglerBody = new Image();
+         this._angryWigglerBody.src =
+             `./layout/draw/custom/${wigglerFolders[this._gameMode]}/${angryWigglerFilenames[this._gameMode]}`;
+->>>>>>> 7ebfc4aeb919bccccf8e0a671b54f065bf21bc29
+ 
+         this._images = [
+             this._blocks.getTheme(),
+             this._monsters.getTheme(),
+-<<<<<<< HEAD
+             this._railSprite,
+             this._goalTape,
+             this._buzzyShelmet,
+-            this._spinyShelmet
+-        ];
+-=======
++            this._spinyShelmet,
+             this._angryWigglerBody
+         ];
+-
+->>>>>>> 7ebfc4aeb919bccccf8e0a671b54f065bf21bc29
+         /* draw configurations */
+         let compare = function(a,b) {
+             if (a.z < b.z) { return -1; }
+@@ -703,10 +694,7 @@
+         onload = function() {
+             loadedCount++; allloaded();
+         };
+-<<<<<<< HEAD
+         $this._onBackgroundReady = allloaded;
+-=======
+->>>>>>> 7ebfc4aeb919bccccf8e0a671b54f065bf21bc29
+ 
+         /* loading all images */
+         $this._images.forEach(function (img) {
+@@ -1712,11 +1700,7 @@
+ 
+         /* multiples cells */
+         if(def.extend) {
+-<<<<<<< HEAD
+             let ext = def.extend(courseObject, this._gameMode, this._gameTheme);
+-=======
+-            let ext = def.extend(courseObject, $this._gameMode);
+->>>>>>> 7ebfc4aeb919bccccf8e0a671b54f065bf21bc29
+             ext.forEach(function(drawExt) {
+                 let opacity = (drawExt.opacity) ? drawExt.opacity : null,
+                     rotation = (drawExt.rotation) ? drawExt.rotation : null;
+--- a/draw/MonsterDraw.js
++++ b/draw/MonsterDraw.js
+@@ -364,34 +364,7 @@
+         var extend = courseObject.extend;
+         extend.push({"x":0, "y":0, "xT":15, "yT":0});
+         return extend;
+-<<<<<<< HEAD
+-    }},
+-    52:{"extend":function(courseObject) {
+-        var extend = courseObject.extend;
+-        let add = 0.2,
+-            subType = courseObject.subType;
+-        extend.push({"x":add, "y":-add, "xT":9, "yT":4});
+-        /* angry */
+-        if(subType) { extend.push({"x":0, "y":0, "xT":9, "yT":5}); }
+-        /* normal */
+-        else { extend.push({"x":0, "y":0, "xT":8, "yT":5}); }
+-        return extend;
+-    }},    
+-    54: {
+-        "extend": function (courseObject) {
+-            var extend = [];
+-            /* Burner base */
+-            extend.push({ "x": 0, "y": 0, "xT": 9, "yT": 6 });
+-
+-            /* Burner body: select the off or on artwork */
+-            let tileRow = courseObject.subType ? 4 : 7;
+-            extend = MonsterDraw._extendForObjects(extend, 1, 3, 10, tileRow, 0, 1);
+-            return extend;
+-        }
+-    },
+-=======
+-    }
+-    },
++    }},
+     52: {
+         "extend": function (courseObject, gameMode) {
+             const extend = [];
+@@ -438,13 +411,18 @@
+             return extend;
+         }
+     },
+-    54:{"extend":function(courseObject) {
+-        var extend = [];
+-        extend.push({"x":0, "y":0, "xT":9, "yT":6});
+-        extend = MonsterDraw._extendForObjects(extend, 1, 3, 10, 7, 0, 1);
+-        return extend;
+-    }},
+->>>>>>> 7ebfc4aeb919bccccf8e0a671b54f065bf21bc29
++    54: {
++        "extend": function (courseObject) {
++            var extend = [];
++            /* Burner base */
++            extend.push({ "x": 0, "y": 0, "xT": 9, "yT": 6 });
++
++            /* Burner body: select the off or on artwork */
++            let tileRow = courseObject.subType ? 4 : 7;
++            extend = MonsterDraw._extendForObjects(extend, 1, 3, 10, tileRow, 0, 1);
++            return extend;
++        }
++    },
+     55:{"extend":function(courseObject) {
+         let doorType = ((courseObject.flags) >> 18) & 3;
+         /* P door */

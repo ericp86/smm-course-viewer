@@ -1,0 +1,37 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -1091,7 +1091,6 @@
+             _base = $this._base;
+         let x = courseObject.x, y = courseObject.y;
+ 
+-<<<<<<< HEAD
+         // Skip skull coasters when their tileset is unavailable.
+         if ((courseObject.type === 36 || courseObject.type === 9) &&
+             (!_titleset.complete || !_titleset.naturalWidth)) {
+@@ -2371,11 +2370,9 @@
+             return;
+         }
+ 
+-=======
+         if (!_titleset.complete || !_titleset.naturalWidth) {
+             return;
+         }
+->>>>>>> 7c9caa284b5381fd762c7da8f1fa46e076f4c201
+         /* multiples cells */
+         if(def.extend) {
+             let ext = def.extend(courseObject, this._gameMode, this._gameTheme);
+@@ -2536,14 +2533,9 @@
+             }
+             var objectPaint = {
+                 "titleset":_titleset, "xT":xT, "yT":yT, "xTs":_ts, "yTs":_ts,
+-<<<<<<< HEAD
+                 "x":x, "y":y, "xExt":0, "yExt":0, "xBase":_base, "yBase":_base, 
+                 "size":courseObject.size, "width":courseObject.width,
+                 "rotation":pipeRotation};
+-=======
+-                "x":x, "y":y, "xExt":0, "yExt":0, "xBase":_base, "yBase":_base,
+-                "size":courseObject.size, "width":courseObject.width};
+->>>>>>> 7c9caa284b5381fd762c7da8f1fa46e076f4c201
+             $this._paintObject(objectPaint);
+         }
+ 

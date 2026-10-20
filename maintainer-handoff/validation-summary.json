@@ -1,0 +1,32 @@
+{
+  "results.json": {
+    "passed": 35559,
+    "failed": 0,
+    "skipped": 0
+  },
+  "atlas-safety-results.json": {
+    "passed": 5392,
+    "failed": 0,
+    "skipped": 0
+  },
+  "atlas-lifecycle-results.json": {
+    "passed": 576,
+    "failed": 0,
+    "skipped": 0
+  },
+  "focused-recordings.json": {
+    "healthyRecordingsUnchanged": 3160
+  },
+  "all-object-recordings.json": {
+    "healthyRecordingsUnchanged": 13056
+  },
+  "combined-scene-hashes.json": {
+    "healthyRecordingsUnchanged": 960
+  },
+  "primaryMixedScenesIdentical": 1152,
+  "additionalLifecycleRecordingsIdentical": 576,
+  "totalPassed": 41527,
+  "totalFailed": 0,
+  "totalSkipped": 0,
+  "previous192MixedSceneFailuresResolved": true
+}

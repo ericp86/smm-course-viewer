@@ -1,0 +1,42 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -153,17 +153,13 @@
+                 // Pass 3: Draw all remaining objects.
+                 _objects.forEach(function(courseObject) {
+                     let type = courseObject.type;
+-<<<<<<< HEAD
+ 
+                     if (type === 66 || type === 38) return;
+ 
+-                    if ($this._blocks.hasDraw(type)) {
+-=======
+                     if (type === 59) {
+                         $this._drawRail(courseObject);
+                     }
+                     else if($this._blocks.hasDraw(type)) {
+->>>>>>> ae69e2d237a7e7bcd3860da8ccc0dfd77449d730
+                         $this._drawObjectFromTheme($this._blocks, courseObject);
+                     }
+                     else if ($this._monsters.hasDraw(type)) {
+--- a/lib/SmmCourseViewer.js
++++ b/lib/SmmCourseViewer.js
+@@ -288,9 +288,6 @@
+         let transform = this._rawHex2sint(_rawHex, _pos + 0x1E, 1);
+         let childTransform = this._rawHex2sint(_rawHex, _pos + 0x1F, 1);
+         /* course object */
+-<<<<<<< HEAD
+-        x = parseInt(x/160, 10); z = z / 160; y = parseInt(y/160, 10); /* normalization */
+-=======
+         // Preserve fractional tile coordinates for tracks.
+         if (type === 59) {
+             x = x / 160;
+@@ -299,8 +296,7 @@
+             x = parseInt(x / 160, 10);
+             y = parseInt(y / 160, 10);
+         }
+-        z = parseInt(z / 160, 10);
+->>>>>>> ae69e2d237a7e7bcd3860da8ccc0dfd77449d730
++        z = z / 160;
+         let objectData = {
+             "x":x, "z":z, "y":y, "width":width, "height":height, 
+             "flags":flags, "childFlags":childFlags, "extendedData":extendedData,

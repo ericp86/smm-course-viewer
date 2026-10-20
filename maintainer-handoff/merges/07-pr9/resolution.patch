@@ -1,0 +1,50 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -979,7 +979,6 @@
+             _ts = _theme.getThemeSize(),
+             _base = $this._base;
+         let x = courseObject.x, y = courseObject.y;
+-<<<<<<< HEAD
+ 
+         // Skip skull coasters when their tileset is unavailable.
+         if (courseObject.type === 36 &&
+@@ -1370,7 +1369,13 @@
+                 _ts, _ts,
+                 0, 0,
+                 _base, _base
+-=======
++            );
++
++            $this._context.restore();
++
++            return;
++        }
++
+         /* Draw cannons using the original sprite with correct aiming rotation. */
+         if (courseObject.type === 47) {
+ 
+@@ -1434,7 +1439,6 @@
+                 -spriteSize / 2,
+                 spriteSize,
+                 spriteSize
+->>>>>>> e5352e338974e7fa3b3fc18352baeb379c78c1de
+             );
+ 
+             $this._context.restore();
+@@ -1442,7 +1446,6 @@
+             return;
+         }
+ 
+-<<<<<<< HEAD
+         /* Draw the SMB3 goal in all non-Castle themes. */
+         if (courseObject.type === 27 &&
+             $this._gameMode === "M3" &&
+@@ -1486,8 +1489,6 @@
+             return;
+         }
+ 
+-=======
+->>>>>>> e5352e338974e7fa3b3fc18352baeb379c78c1de
+         /* multiples cells */
+         if(def.extend) {
+             let ext = def.extend(courseObject);

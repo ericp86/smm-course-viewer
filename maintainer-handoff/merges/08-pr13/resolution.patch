@@ -1,0 +1,28 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -980,7 +980,6 @@
+             _base = $this._base;
+         let x = courseObject.x, y = courseObject.y;
+ 
+-<<<<<<< HEAD
+         // Skip skull coasters when their tileset is unavailable.
+         if (courseObject.type === 36 &&
+             (!_titleset.complete || !_titleset.naturalWidth)) {
+@@ -1488,7 +1487,8 @@
+             );
+ 
+             return;
+-=======
++        }
++
+         // Orient Spinies, Buzzy Beetles, and Spike Tops to their surfaces.
+         if (
+             courseObject.type === 25 ||
+@@ -1560,7 +1560,6 @@
+                 $this._context.restore();
+                 return;
+             }
+->>>>>>> dce2654abbcc4d22cac98f00e95c296559ca4864
+         }
+ 
+         /* multiples cells */

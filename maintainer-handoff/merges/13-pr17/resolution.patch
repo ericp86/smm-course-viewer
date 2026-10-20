@@ -1,0 +1,145 @@
+--- a/draw/Draw.js
++++ b/draw/Draw.js
+@@ -41,7 +41,6 @@
+         /*global MonsterDraw */
+         /*eslint no-undef: "error"*/
+         this._monsters = new MonsterDraw(this._gameMode, this._gameTheme);
+-<<<<<<< HEAD
+         // Original Super Mario Maker track artwork.
+         this._railSprite = new Image();
+         this._railSprite.src = "./layout/draw/format/59.png";
+@@ -101,7 +100,7 @@
+             this._spinyShelmet,
+             this._angryWigglerBody
+         ];
+-=======
++
+         // Load custom P Switch artwork for SMB1 and NSMBU.
+         const pSwitchFolders = {
+             M1: "smb1",
+@@ -116,15 +115,9 @@
+                 `./layout/draw/custom/${pSwitchFolders[this._gameMode]}/p-switch.png`;
+         }
+ 
+-        this._images = [
+-            this._blocks.getTheme(),
+-            this._monsters.getTheme()
+-        ];
+-
+         if (this._customPSwitch) {
+             this._images.push(this._customPSwitch);
+         }
+->>>>>>> e5192068dfaea0ba6968a446c15425eafcfe2e6f
+         /* draw configurations */
+         let compare = function(a,b) {
+             if (a.z < b.z) { return -1; }
+@@ -725,7 +718,6 @@
+         $this._images.forEach(function (img) {
+             let handled = false;
+ 
+-<<<<<<< HEAD
+             function finish(success, err) {
+                 if (handled) return;
+                 handled = true;
+@@ -748,28 +740,6 @@
+             // Handle images that finished before handlers were attached.
+             if (img.complete) {
+                 finish(img.naturalWidth > 0, { target: img });
+-=======
+-            img.onload = function () {
+-                if (handled) return;
+-                handled = true;
+-                onload();
+-            };
+-
+-            img.onerror = function (err) {
+-                if (handled) return;
+-                handled = true;
+-                onerror(err);
+-                onload();
+-            };
+-
+-            // Handle images that finished loading before handlers were assigned.
+-            if (img.complete) {
+-                if (img.naturalWidth > 0) {
+-                    img.onload();
+-                } else {
+-                    img.onerror({ target: img });
+-                }
+->>>>>>> e5192068dfaea0ba6968a446c15425eafcfe2e6f
+             }
+         });
+     }
+@@ -1748,7 +1718,6 @@
+ 
+         /* multiples cells */
+         if(def.extend) {
+-<<<<<<< HEAD
+             let ext = def.extend(courseObject, this._gameMode, this._gameTheme);
+             ext.forEach(function(drawExt) {
+                 let opacity = (drawExt.opacity) ? drawExt.opacity : null,
+@@ -1768,6 +1737,20 @@
+                     spriteSheet = $this._angryWigglerBody;
+                     spriteX = 0;
+                     spriteY = 0;
++                    spriteWidth = spriteSheet.naturalWidth;
++                    spriteHeight = spriteSheet.naturalHeight;
++                }
++                // Replace only the P Switch, not the P Door.
++                const useCustomPSwitch =
++                    courseObject.type === 18 &&
++                    !courseObject.subType &&
++                    $this._customPSwitch !== null &&
++                    $this._customPSwitch.complete &&
++                    $this._customPSwitch.naturalWidth > 0;
++
++                if (useCustomPSwitch) {
++                    spriteSheet = $this._customPSwitch;
++                    spriteX = 0; spriteY = 0;
+                     spriteWidth = spriteSheet.naturalWidth;
+                     spriteHeight = spriteSheet.naturalHeight;
+                 }
+@@ -1783,43 +1766,11 @@
+                     "yExt": drawExt.y,
+                     "xBase": _base,
+                     "yBase": _base,
+-=======
+-            let ext = def.extend(courseObject);
+-
+-            ext.forEach(function (drawExt) {
+-                let opacity = (drawExt.opacity) ? drawExt.opacity : null,
+-                    rotation = (drawExt.rotation) ? drawExt.rotation : null;
+-                // Replace only the P Switch, not the P Door.
+-                const useCustomPSwitch =
+-                    courseObject.type === 18 &&
+-                    !courseObject.subType &&
+-                    $this._customPSwitch !== null &&
+-                    $this._customPSwitch.complete &&
+-                    $this._customPSwitch.naturalWidth > 0;
+-
+-                const sprite = useCustomPSwitch
+-                    ? $this._customPSwitch
+-                    : _titleset;
+-
+-                var objectPaint = {
+-                    "titleset": sprite,
+-                    "xT": useCustomPSwitch ? 0 : drawExt.xT,
+-                    "yT": useCustomPSwitch ? 0 : drawExt.yT,
+-                    "xTs": useCustomPSwitch ? sprite.naturalWidth : _ts,
+-                    "yTs": useCustomPSwitch ? sprite.naturalHeight : _ts,
+-                    "x": x, "y": y,
+-                    "xExt": drawExt.x, "yExt": drawExt.y,
+-                    "xBase": _base, "yBase": _base,
+->>>>>>> e5192068dfaea0ba6968a446c15425eafcfe2e6f
+                     "size": courseObject.size,
+                     "width": courseObject.width,
+                     "opacity": opacity,
+                     "rotation": rotation
+                 };
+-<<<<<<< HEAD
+-=======
+-
+->>>>>>> e5192068dfaea0ba6968a446c15425eafcfe2e6f
+                 $this._paintObject(objectPaint);
+             });
+         }

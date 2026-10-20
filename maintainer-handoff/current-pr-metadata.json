@@ -1,0 +1,155 @@
+[
+  {
+    "number": 7,
+    "branch": "fix/object-depth-rotation",
+    "sha": "dd8eefd6022f32e01eb47785b35490568b94e7e4",
+    "state": "OPEN",
+    "title": "Fix object rotation, orientation, and rendering depth",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 8,
+    "branch": "fix/goal-rendering-scenery",
+    "sha": "73a990cc04d20f761f825da4a5063de04af62962",
+    "state": "OPEN",
+    "title": "Add goal rendering and scenery across game styles",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 9,
+    "branch": "fix/cannon-rendering-rotation",
+    "sha": "e5352e338974e7fa3b3fc18352baeb379c78c1de",
+    "state": "OPEN",
+    "title": "Fix cannon rendering and rotation for all mounting surfaces",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 10,
+    "branch": "fix/track-rendering-endpoints",
+    "sha": "ae69e2d237a7e7bcd3860da8ccc0dfd77449d730",
+    "state": "OPEN",
+    "title": "Fix track rendering, orientation, and endpoint caps",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 11,
+    "branch": "fix/skull-coaster-rendering-positioning",
+    "sha": "fcb4f3b39eb45f9a05ac569a36f765a701895655",
+    "state": "OPEN",
+    "title": "Fix skull coaster rendering positioning and object positioning on curved tracks",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 12,
+    "branch": "fix/castle-lava-rendering",
+    "sha": "b0a20faf0251fe4fd01ea6027e134d0b76190aa3",
+    "state": "OPEN",
+    "title": "Add Castle lava rendering with foreground layering",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 13,
+    "branch": "fix/enemy-surface-orientation",
+    "sha": "dce2654abbcc4d22cac98f00e95c296559ca4864",
+    "state": "OPEN",
+    "title": "Fix Spiny, Buzzy Beetle, and Spike Top surface orientation",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 14,
+    "branch": "feat/shelmet-rendering",
+    "sha": "16daacfc6041866c5ef8f9c34311b6818cfb29c3",
+    "state": "OPEN",
+    "title": "Add Spiny and Buzzy Shelmet rendering support",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 15,
+    "branch": "fix/fire-bar-rendering",
+    "sha": "368aaa17eb8ecc19dcc6fced3c5efebd426786df",
+    "state": "OPEN",
+    "title": "Fix fire bar rendering, length, and rotation",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 16,
+    "branch": "fix/wiggler-rendering",
+    "sha": "7ebfc4aeb919bccccf8e0a671b54f065bf21bc29",
+    "state": "OPEN",
+    "title": "Fix Wiggler rendering across all game styles",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 17,
+    "branch": "fix/p-switch-sprites",
+    "sha": "e5192068dfaea0ba6968a446c15425eafcfe2e6f",
+    "state": "OPEN",
+    "title": "Fix P Switch sprites in SMB1 and NSMBU",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 21,
+    "branch": "fix/pipe-attached-enemies-combined",
+    "sha": "5feca7b5f7732538d69f999eebfacbeaafcaa58e",
+    "state": "OPEN",
+    "title": "Fix pipe-attached enemy and object positioning",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 22,
+    "branch": "fix/shoe-goomba-stiletto-artwork",
+    "sha": "f2bac6fabcf114d4cb700a6771dd62ddebba53cb",
+    "state": "OPEN",
+    "title": "Add custom Shoe Goomba and Stiletto sprites",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 23,
+    "branch": "fix/winged-objects",
+    "sha": "7c9caa284b5381fd762c7da8f1fa46e076f4c201",
+    "state": "OPEN",
+    "title": "Add wing rendering for objects across all game styles",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 24,
+    "branch": "fix/theme-specific-enemy-colors",
+    "sha": "b4df66491d2f6ad853761cc44b5f7a0c90b34dd9",
+    "state": "OPEN",
+    "title": "Fix theme specific enemy colors",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 25,
+    "branch": "feature/linked-door-symbols",
+    "sha": "7b99e2d24d71bccf47acd685c6364dc62d0d7d9d",
+    "state": "OPEN",
+    "title": "Feature/linked door symbols",
+    "base": "master",
+    "headOwner": "ericp86"
+  },
+  {
+    "number": 26,
+    "branch": "fix/unicode-course-names",
+    "sha": "aea7027b12014b9a45ecdfd5254dc9e89f5e3f9d",
+    "state": "OPEN",
+    "title": "Fix UTF-16BE decoding of Unicode course names",
+    "base": "master",
+    "headOwner": "ericp86"
+  }
+]
