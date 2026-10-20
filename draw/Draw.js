@@ -688,6 +688,9 @@ class Draw {
         allloaded = function() {
             if (loadedCount === imageCount && $this._backgroundReady !== false && !rendered) {
                 rendered = true;
+
+                // Approved integration has background and foreground Castle lava.
+                $this._drawLava();
                 const goalObject = _objects.find(function(courseObject) {
                     return courseObject.type === 27;
                 });
@@ -703,6 +706,7 @@ class Draw {
                 const isPipeAttached = function(courseObject) {
                     return (
                         courseObject.type !== 9 &&
+                        courseObject.type !== 59 &&
                         courseObject.linkId !== -1 &&
                         pipeLinkIds.has(courseObject.linkId)
                     );
@@ -738,7 +742,10 @@ class Draw {
                 // Pass 1: Draw pipe-attached objects behind their pipes.
                 _objects.forEach(function(courseObject) {
                     if(courseObject.type !== 66 && courseObject.type !== 38 && isPipeAttached(courseObject)) {
-                        drawObject(courseObject);
+                        if ($this._blocks.hasDraw(courseObject.type) ||
+                            $this._monsters.hasDraw(courseObject.type)) {
+                            drawObject(courseObject);
+                        }
                     }
                 });
 
@@ -1090,6 +1097,7 @@ class Draw {
             _ts = _theme.getThemeSize(),
             _base = $this._base;
         let x = courseObject.x, y = courseObject.y;
+        let wingTransform = null;
 
         // Skip skull coasters when their tileset is unavailable.
         if ((courseObject.type === 36 || courseObject.type === 9) &&
@@ -1572,140 +1580,6 @@ class Draw {
             } // End if (pipe)
         } // End pipe-attachment check
 
-        if (pipeDirection !== null &&
-            (!_titleset.complete || !_titleset.naturalWidth)) {
-            return;
-        }
-
-        if (
-            pipeDirection !== null &&
-            (
-                courseObject.type === 25 ||
-                courseObject.type === 28 ||
-                courseObject.type === 40
-            )
-        ) {
-            // Surface orientation stored in bits 25-26.
-            const orientation = (courseObject.flags >>> 25) & 3;
-
-            // Sprite coordinates in the monster tileset.
-            let spriteX;
-            const spriteY = 4;
-
-            if (courseObject.type === 25) {
-                spriteX = 2; // Spiny
-            } else if (courseObject.type === 28) {
-                spriteX = 4; // Buzzy Beetle
-            } else {
-                // Spike Top: red or blue.
-                spriteX = courseObject.subType ? 6 : 5;
-            }
-
-            // Use pipe rotation for pipe-attached enemies.
-            // Otherwise, preserve their existing surface-orientation behavior.
-            const attachedToPipe = courseObject.linkId !== -1 &&
-                $this._objects.some(obj =>
-                    obj.type === 9 &&
-                    obj.linkId === courseObject.linkId
-                );
-
-            // Map surface orientation to sprite rotation and flipping.
-            let angle = 0;
-            let flipX = false;
-
-            if (attachedToPipe) {
-                // Pipe directions:
-                // 0 = Right, 1 = Left, 2 = Up, 3 = Down.
-                // pipeRotation was calculated earlier in this function.
-                angle = pipeRotation * Math.PI / 180;
-                flipX = false;
-
-            } else {
-                // Preserve existing surface-orientation behavior.
-                switch (orientation) {
-                    case 0:
-                        // First vertical wall.
-                        angle = -Math.PI / 2;
-                        flipX = true;
-                        break;
-
-                    case 1:
-                        // Second vertical wall.
-                        angle = Math.PI / 2;
-                        break;
-
-                    case 2:
-                        // Ceiling.
-                        angle = Math.PI;
-                        flipX = true;
-                        break;
-
-                    case 3:
-                    default:
-                        // Floor.
-                        angle = 0;
-                        break;
-                }
-            }
-
-            // Scale enlarged enemies to 2x their normal size.
-            const spriteSize = _base * courseObject.size;
-
-            // Preserve the original anchor point for normal-sized enemies.
-            let centerX = (x + 0.5) * _base;
-            let centerY = $this._yFix - (y + 0.5) * _base;
-
-            // Surface-specific positioning for enlarged enemies.
-            // Pipe-attached enemies retain their independent offsets.
-            if (!attachedToPipe && courseObject.size === 2) {
-                switch (orientation) {
-                    case 0:
-                        // First vertical wall: move sprite left.
-                        centerX -= _base / 2;
-                        break;
-
-                    case 1:
-                        // Second vertical wall: move sprite left.
-                        centerX -= _base / 2;
-                        break;
-
-                    case 2:
-                        // Ceiling: move sprite upward.
-                        centerY -= _base / 2;
-                        break;
-
-                    case 3:
-                    default:
-                        // Floor: raise enlarged enemies to prevent ground overlap.
-                        centerY -= _base / 2;
-                        break;
-                }
-            }
-
-            $this._context.save();
-            $this._context.translate(centerX, centerY);
-            $this._context.rotate(angle);
-            $this._context.scale(flipX ? -1 : 1, 1);
-
-            $this._context.drawImage(
-                _titleset,
-                spriteX * _ts, spriteY * _ts,
-                _ts, _ts,
-                -spriteSize / 2, -spriteSize / 2,
-                spriteSize, spriteSize
-            );
-
-            $this._context.restore();
-
-            // Preserve wings when the wing renderer is also present.
-            if ((courseObject.flags & 0x02) !== 0 &&
-                typeof $this._drawWings === "function") {
-                $this._drawWings(courseObject, x, y);
-            }
-            return;
-
-        }
-
         // Center objects attached to curved tracks at the arc midpoint.
         if (courseObject.type !== 59 && courseObject.linkId !== -1) {
             const track = this._objects.find(obj =>
@@ -1893,6 +1767,10 @@ class Draw {
                 spriteWidth, spriteHeight
             );
             $this._context.restore();
+            return;
+        }
+
+        if (courseObject.type === 49 && $this._gameTheme !== "castle") {
             return;
         }
 
@@ -2232,7 +2110,8 @@ class Draw {
             return;
         }
 
-        // Orient Spinies, Buzzy Beetles, and Spike Tops to their surfaces.
+           // Rotate Spinies, Buzzy Beetles, and Spike Tops
+        // to match their attached surfaces.
         if (
             courseObject.type === 25 ||
             courseObject.type === 28 ||
@@ -2242,67 +2121,130 @@ class Draw {
                 return;
             }
 
+            // Surface orientation stored in bits 25-26.
             const orientation = (courseObject.flags >>> 25) & 3;
-            const sprite = def.extend(courseObject).find(
-                part => part.x === 0 && part.y === 0
-            );
 
-            if (sprite) {
-                let angle = 0;
-                let flipX = false;
+            // Sprite coordinates in the monster tileset.
+            let spriteX;
+            const spriteY = 4;
 
+            if (courseObject.type === 25) {
+                spriteX = 2; // Spiny
+            } else if (courseObject.type === 28) {
+                // Match the theme-specific Buzzy Beetle colors.
+                const useBlack = ["M1", "M3"].includes(this._gameMode) &&
+                    ["overworld", "water", "airship"].includes(this._gameTheme);
+                spriteX = useBlack ? 3 : 4;
+            } else {
+                // Spike Top: red or blue.
+                spriteX = courseObject.subType ? 6 : 5;
+            }
+
+            // Use pipe rotation for pipe-attached enemies.
+            // Otherwise, preserve their existing surface-orientation behavior.
+            const attachedToPipe = courseObject.linkId !== -1 &&
+                $this._objects.some(obj =>
+                    obj.type === 9 &&
+                    obj.linkId === courseObject.linkId
+                );
+
+            // Map surface orientation to sprite rotation and flipping.
+            let angle = 0;
+            let flipX = false;
+
+            if (attachedToPipe) {
+                // Pipe directions:
+                // 0 = Right, 1 = Left, 2 = Up, 3 = Down.
+                // pipeRotation was calculated earlier in this function.
+                angle = pipeRotation * Math.PI / 180;
+                flipX = false;
+
+            } else {
+                // Preserve existing surface-orientation behavior.
                 switch (orientation) {
                     case 0:
+                        // First vertical wall.
                         angle = -Math.PI / 2;
                         flipX = true;
                         break;
+
                     case 1:
+                        // Second vertical wall.
                         angle = Math.PI / 2;
                         break;
+
                     case 2:
+                        // Ceiling.
                         angle = Math.PI;
                         flipX = true;
                         break;
+
                     case 3:
                     default:
+                        // Floor.
+                        angle = 0;
                         break;
                 }
-
-                const size = courseObject.size;
-                const drawSize = _base * size;
-
-                // Match the existing renderer's position calculations.
-                const drawX = size === 1
-                    ? x * _base
-                    : (x - (2 - Math.ceil(courseObject.width / 2))) * _base;
-
-                const drawY = size === 1
-                    ? $this._yFix - (y + 1) * _base
-                    : $this._yFix - (y + 2) * _base;
-
-                const centerX = drawX + drawSize / 2;
-                const centerY = drawY + drawSize / 2;
-
-                $this._context.save();
-                $this._context.translate(centerX, centerY);
-                $this._context.rotate(angle);
-                $this._context.scale(flipX ? -1 : 1, 1);
-
-                $this._context.drawImage(
-                    _titleset,
-                    sprite.xT * _ts,
-                    sprite.yT * _ts,
-                    _ts,
-                    _ts,
-                    -drawSize / 2,
-                    -drawSize / 2,
-                    drawSize,
-                    drawSize
-                );
-
-                $this._context.restore();
-                return;
             }
+
+            // Scale enlarged enemies to 2x their normal size.
+            const spriteSize = _base * courseObject.size;
+
+            // Preserve the original anchor point for normal-sized enemies.
+            let centerX = (x + 0.5) * _base;
+            let centerY = $this._yFix - (y + 0.5) * _base;
+
+            // Surface-specific positioning for enlarged enemies.
+            // Pipe-attached enemies retain their independent offsets.
+            if (!attachedToPipe && courseObject.size === 2) {
+                switch (orientation) {
+                    case 0:
+                        // First vertical wall: move sprite left.
+                        centerX -= _base / 2;
+                        break;
+
+                    case 1:
+                        // Second vertical wall: move sprite left.
+                        centerX -= _base / 2;
+                        break;
+
+                    case 2:
+                        // Ceiling: move sprite upward.
+                        centerY -= _base / 2;
+                        break;
+
+                    case 3:
+                    default:
+                        // Floor: raise enlarged enemies to prevent ground overlap.
+                        centerY -= _base / 2;
+                        break;
+                }
+            }
+
+            $this._context.save();
+            $this._context.translate(centerX, centerY);
+            $this._context.rotate(angle);
+            $this._context.scale(flipX ? -1 : 1, 1);
+
+            $this._context.drawImage(
+                _titleset,
+                spriteX * _ts, spriteY * _ts,
+                _ts, _ts,
+                -spriteSize / 2, -spriteSize / 2,
+                spriteSize, spriteSize
+            );
+
+            $this._context.restore();
+
+            // Restore wings for surface-rotated enemies.
+            if ((courseObject.flags & 0x02) !== 0) {
+                $this._drawWings(courseObject, x, y,
+                    attachedToPipe && pipeRotation
+                        ? { centerX, centerY, angle }
+                        : null);
+            }
+            return;
+
         }
 
         /* Draw fire bars with variable length and 64 rotation positions. */
@@ -2370,24 +2312,11 @@ class Draw {
             return;
         }
 
-        if (!_titleset.complete || !_titleset.naturalWidth) {
-            return;
-        }
         /* multiples cells */
         if(def.extend) {
-            let ext = def.extend(courseObject, this._gameMode, this._gameTheme);
-
-
-            // Preserve the verified head/flower composition for pipe Wigglers.
-            if (courseObject.type === 52 && pipeDirection !== null) {
-                ext = [{
-                    x: 0, y: 0,
-                    xT: courseObject.subType ? 9 : 8, yT: 5
-                }];
-                if (!courseObject.subType && $this._gameMode !== "WU") {
-                    ext.push({ x: 0, y: 1, xT: 8, yT: 4 });
-                }
-            }
+            let ext = courseObject.type === 52
+                ? def.extend(courseObject, this._gameMode, pipeDirection !== null)
+                : def.extend(courseObject, this._gameMode, this._gameTheme);
 
             // Pipe-attached Chain Chomps should not display their stake.
             if (courseObject.type === 61 && pipeDirection !== null) {
@@ -2407,6 +2336,9 @@ class Draw {
                 const centerY = this._yFix -
                     (y + (minY + maxY + 2) / 2) * _base;
 
+                wingTransform = {
+                    centerX, centerY, angle: pipeRotation * Math.PI / 180
+                };
                 this._context.save();
                 this._context.translate(centerX, centerY);
                 this._context.rotate(pipeRotation * Math.PI / 180);
@@ -2464,6 +2396,10 @@ class Draw {
                     spriteWidth = spriteSheet.naturalWidth;
                     spriteHeight = spriteSheet.naturalHeight;
                 }
+                if (!spriteSheet.complete || !spriteSheet.naturalWidth) {
+                    return;
+                }
+
                 var objectPaint = {
                     "titleset": spriteSheet,
                     "customShoe": Boolean(customShoe),
@@ -2526,6 +2462,9 @@ class Draw {
         }
         /* only one cell */
         else {
+            if (!_titleset.complete || !_titleset.naturalWidth) {
+                return;
+            }
             let xT = def.xT, yT = def.yT;
             if(def.func) {
                 let nPos = def.func(courseObject);
@@ -2535,13 +2474,14 @@ class Draw {
                 "titleset":_titleset, "xT":xT, "yT":yT, "xTs":_ts, "yTs":_ts,
                 "x":x, "y":y, "xExt":0, "yExt":0, "xBase":_base, "yBase":_base, 
                 "size":courseObject.size, "width":courseObject.width,
-                "rotation":pipeRotation};
+                "rotation":pipeRotation,
+                "wingTransform": pipeRotation ? (wingTransform = {}) : null};
             $this._paintObject(objectPaint);
         }
 
         // Draw wings independently from the object's body sprite.
         if ((courseObject.flags & 0x02) !== 0) {
-            $this._drawWings(courseObject, x, y);
+            $this._drawWings(courseObject, x, y, wingTransform);
         }
     }
 
@@ -2549,7 +2489,7 @@ class Draw {
      * Draw wings for supported winged objects.
      * Wing offsets are measured in course grid tiles.
      */
-    _drawWings(courseObject, x, y) {
+    _drawWings(courseObject, x, y, bodyTransform = null) {
         const oneWingTypes = new Set([
             1, 3, 15, 25, 28, 39, 40,
             45, 46, 52, 56, 58, 61, 62
@@ -3091,21 +3031,101 @@ class Draw {
             ];
 
         wings.forEach(wing => {
-            const drawX = (x + wing.x) * this._base;
-            const drawY = this._yFix -
+            let drawX = (x + wing.x) * this._base;
+            let drawY = this._yFix -
                 (y + settings.y + settings.scale) * this._base;
 
-            this._context.drawImage(
-                wingSheet,
-                wing.xT * tileSize,
-                2 * tileSize,
-                tileSize,
-                tileSize,
-                drawX,
-                drawY,
-                wingSize,
-                wingSize
-            );
+            // Move each wing center with the rotated body.
+            if (bodyTransform && bodyTransform.angle) {
+                const { centerX, centerY, angle } = bodyTransform;
+                const dx = drawX + wingSize / 2 - centerX;
+                const dy = drawY + wingSize / 2 - centerY;
+                const cos = Math.cos(angle), sin = Math.sin(angle);
+                drawX = centerX + dx * cos - dy * sin - wingSize / 2;
+                drawY = centerY + dx * sin + dy * cos - wingSize / 2;
+            }
+
+            // Enlarged, pipe-attached one-wing calibration.
+            // Positive X moves right; positive Y moves up.
+            // Directions: 0 Right, 1 Left, 2 Up, 3 Down.
+            const enlargedPipeWingAdjustments = {
+                spinyBuzzySpikeTop: {
+                    0: { x: -0.5, y: -0.5 }, // Right
+                    1: { x: 0.5, y: 0.5 },   // Left
+                    2: { x: 0.5, y: -0.5 },  // Up
+                    3: { x: -0.5, y: 0.5 }   // Down
+                },
+                nsmbKoopa: {
+                    0: { x: -1, y: -0.5 }, // Right
+                    1: { x: 1, y: 0.5 }, // Left
+                    2: { x: 0.5, y: -1 }, // Up
+                    3: { x: -0.5, y: 1 }  // Down
+                }
+            };
+
+            if (enlarged && wingCount === 1 &&
+                courseObject.linkId !== -1) {
+
+                const isShelledEnemy = [25, 28, 40].includes(courseObject.type);
+                const isNsmbKoopa =
+                    this._gameMode === "WU" && courseObject.type === 1;
+
+                if (isShelledEnemy || isNsmbKoopa) {
+                    const pipe = this._objects.find(object =>
+                        object.type === 9 &&
+                        object.linkId === courseObject.linkId);
+
+                    if (pipe) {
+                        const direction = (pipe.flags & 0x60) / 0x20;
+                        const group = isNsmbKoopa
+                            ? "nsmbKoopa"
+                            : "spinyBuzzySpikeTop";
+
+                        const adjustment =
+                            enlargedPipeWingAdjustments[group][direction];
+
+                        if (adjustment) {
+                            drawX += adjustment.x * this._base;
+                            drawY -= adjustment.y * this._base;
+                        }
+                    }
+                }
+            }
+
+            if (bodyTransform && bodyTransform.angle) {
+                // Rotate the artwork around its own center.
+                // Its center already follows the body's rotation.
+                this._context.save();
+                this._context.translate(
+                    drawX + wingSize / 2,
+                    drawY + wingSize / 2
+                );
+                this._context.rotate(bodyTransform.angle);
+                this._context.drawImage(
+                    wingSheet,
+                    wing.xT * tileSize,
+                    2 * tileSize,
+                    tileSize,
+                    tileSize,
+                    -wingSize / 2,
+                    -wingSize / 2,
+                    wingSize,
+                    wingSize
+                );
+                this._context.restore();
+            } else {
+                this._context.drawImage(
+                    wingSheet,
+                    wing.xT * tileSize,
+                    2 * tileSize,
+                    tileSize,
+                    tileSize,
+                    drawX,
+                    drawY,
+                    wingSize,
+                    wingSize
+                );
+            }
         });
     }
 
@@ -3156,6 +3176,11 @@ class Draw {
                 xCenter = xBase / 2.0, yCenter = yBase / 2.0;
             let xRotation = x + xCenter,
                 yRotation = y + yCenter;
+            if (_objectPaint.wingTransform) {
+                Object.assign(_objectPaint.wingTransform, {
+                    centerX: xRotation, centerY: yRotation, angle: degree
+                });
+            }
             this._context.save();
             this._context.translate(xRotation, yRotation);
             this._context.rotate(degree);
