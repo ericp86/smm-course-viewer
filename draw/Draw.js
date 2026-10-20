@@ -100,6 +100,24 @@ class Draw {
             this._spinyShelmet,
             this._angryWigglerBody
         ];
+
+        // Load custom P Switch artwork for SMB1 and NSMBU.
+        const pSwitchFolders = {
+            M1: "smb1",
+            WU: "nsmbu"
+        };
+
+        this._customPSwitch = null;
+
+        if (pSwitchFolders[this._gameMode]) {
+            this._customPSwitch = new Image();
+            this._customPSwitch.src =
+                `./layout/draw/custom/${pSwitchFolders[this._gameMode]}/p-switch.png`;
+        }
+
+        if (this._customPSwitch) {
+            this._images.push(this._customPSwitch);
+        }
         /* draw configurations */
         let compare = function(a,b) {
             if (a.z < b.z) { return -1; }
@@ -1719,6 +1737,20 @@ class Draw {
                     spriteSheet = $this._angryWigglerBody;
                     spriteX = 0;
                     spriteY = 0;
+                    spriteWidth = spriteSheet.naturalWidth;
+                    spriteHeight = spriteSheet.naturalHeight;
+                }
+                // Replace only the P Switch, not the P Door.
+                const useCustomPSwitch =
+                    courseObject.type === 18 &&
+                    !courseObject.subType &&
+                    $this._customPSwitch !== null &&
+                    $this._customPSwitch.complete &&
+                    $this._customPSwitch.naturalWidth > 0;
+
+                if (useCustomPSwitch) {
+                    spriteSheet = $this._customPSwitch;
+                    spriteX = 0; spriteY = 0;
                     spriteWidth = spriteSheet.naturalWidth;
                     spriteHeight = spriteSheet.naturalHeight;
                 }
