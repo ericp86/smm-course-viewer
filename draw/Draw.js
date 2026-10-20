@@ -307,6 +307,10 @@ class Draw {
         const ts = this._monsters.getThemeSize();
         const base = this._base;
 
+        if (!tileset.complete || !tileset.naturalWidth) {
+            return;
+        }
+
         // Castle theme: all four game styles.
         if (theme === "castle") {
 
@@ -1179,6 +1183,21 @@ class Draw {
             _base = $this._base;
         let x = courseObject.x, y = courseObject.y;
         let wingTransform = null;
+
+        // These specialized paths draw directly from the atlas.
+        if (
+            (
+                courseObject.type === 27 ||
+                courseObject.type === 47 ||
+                courseObject.type === 54 ||
+                courseObject.type === 66 ||
+                courseObject.type === 67 ||
+                (courseObject.type === 12 && courseObject.subType === 1)
+            ) &&
+            (!_titleset.complete || !_titleset.naturalWidth)
+        ) {
+            return;
+        }
 
         // Skip pipes when their atlas artwork is unavailable.
         if (courseObject.type === 9 &&
