@@ -3,10 +3,6 @@
     "bytes": 4477,
     "sha256": "090b752fff54c998b4b9c3d9b167c973e25d31d02f3f20b89d1ec1461680704d"
   },
-  "MAINTAINER-MESSAGE.md": {
-    "bytes": 2124,
-    "sha256": "edd0fad865393f8c3e49b64c4a1548c54e82b94d772c346148b9cd16354f738b"
-  },
   "OPTION-B.md": {
     "bytes": 2348,
     "sha256": "2b54ac1662b1d56ba5749880e842af8f9ab7997d7b78ae17dc533e8c42d3846c"
@@ -36,8 +32,8 @@
     "sha256": "1a4079c9267d3335bb68f6754c4e9f094b2beb7a565fc5320f5186a197f113a8"
   },
   "README.md": {
-    "bytes": 4561,
-    "sha256": "8d673117db30c6802f213ed158f6cefc31f5336b1d0213e730755113f9099039"
+    "bytes": 4514,
+    "sha256": "5f6e41a6cae0bf973995b8804617af1844b0f0afa9e50fde7bcee798d2ea3388"
   },
   "verify-tree.py": {
     "bytes": 1226,

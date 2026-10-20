@@ -18,7 +18,6 @@ The exact browser-test application is published separately at `ericp86/smm-cours
 - VALIDATION.md: completed automated evidence and fresh packaging checks, kept distinct.
 - BROWSER-TEST.md: user-reported acceptance, separate WSL viewer at port 8008 and retained visual checklist.
 - OPTION-B.md: optional coordinated-PR alternative, not a request to open or merge one.
-- MAINTAINER-MESSAGE.md: draft only; not sent.
 
 Run with normal Python 3 (not optimization mode):
 
