@@ -6,6 +6,8 @@ The exact browser-test application is published separately at `ericp86/smm-cours
 
 **Required final application tree:** `c75546d5456ba655c7a1afa59ddc31dc80186347`.
 
+**Recommended workflow:** merge the existing 17 PRs individually using Option A. The complete independent replay and automated validation are complete, and user-reported manual browser visual acceptance is **PASS**. See VALIDATION.md for scope and limitations; no new production PR is needed.
+
 ## Read and verify
 
 - FINAL-STATUS.md: approved pins, independent replay outcome and remaining limitations.
@@ -14,7 +16,7 @@ The exact browser-test application is published separately at `ericp86/smm-cours
 - ASSETS.md / asset-hashes.json: the 28 required base atlases and exact approved hashes.
 - SOURCE-COMPARISON.md: six explained source differences from approved integration.
 - VALIDATION.md: completed automated evidence and fresh packaging checks, kept distinct.
-- BROWSER-TEST.md: separate WSL viewer at port 8008 and visual checklist.
+- BROWSER-TEST.md: user-reported acceptance, separate WSL viewer at port 8008 and retained visual checklist.
 - OPTION-B.md: optional coordinated-PR alternative, not a request to open or merge one.
 - MAINTAINER-MESSAGE.md: draft only; not sent.
 
@@ -59,6 +61,6 @@ The offline script verifies bundle integrity, retrieves only local objects, and 
 
 ## Browser test without replaying
 
-Use a new checkout of the testing branch; follow BROWSER-TEST.md. The exact application tree is unchanged from the independently completed replay. Browser visual verification remains a user action.
+Use a new checkout of the testing branch; follow BROWSER-TEST.md. The exact application tree is unchanged from the independently completed replay. The user reports PASS after comparing the complete collection of previously compiled test courses with approved enhanced integration. This is manual acceptance, not exhaustive or pixel-perfect automated verification; failure-injection browser testing is not reported complete.
 
 This publication creates only the documentation and browser-test branches. Existing PRs, master branches and compare/enhanced are unchanged; no PR was created or edited. Contacting the maintainer or publishing a coordinated PR remains a separate decision.
